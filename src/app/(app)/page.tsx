@@ -1,5 +1,5 @@
-import { DashboardContent } from "@/features/dashboard/components/dashboard-content";
+import { redirect } from "next/navigation";
 
-export default function DashboardPage() {
-  return <DashboardContent />;
+export default function RootPage() {
+  redirect("/hooks");
 }

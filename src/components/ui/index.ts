@@ -67,6 +67,9 @@ export { InputOTP, InputOTPGroup } from "./input-otp";
 // Label
 export { Label, IconLabel, labelVariants, iconLabelVariants } from "./label";
 
+// Page Header
+export { PageHeader, type PageHeaderTab } from "./page-header";
+
 // Pagination
 export {
   Pagination,

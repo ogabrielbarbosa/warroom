@@ -48,7 +48,10 @@ function Dialog({ open, onClose, children, className }: DialogProps) {
   return (
     <div className="fixed inset-0 z-50">
       <DialogOverlay onClick={onClose} />
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        onClick={onClose}
+      >
         <div
           data-slot="dialog"
           role="dialog"
@@ -57,6 +60,7 @@ function Dialog({ open, onClose, children, className }: DialogProps) {
             "relative w-full max-w-md border border-border bg-card shadow-lg animate-in fade-in-0 zoom-in-95 duration-200",
             className
           )}
+          onClick={(e) => e.stopPropagation()}
         >
           {children}
         </div>

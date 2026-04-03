@@ -19,6 +19,8 @@ interface NavItemConfig {
   label: string;
   id: string;
   active?: boolean;
+  disabled?: boolean;
+  badge?: string;
   children?: SubNavItemConfig[];
 }
 
@@ -79,11 +81,13 @@ function CollapsibleNavItem({
   label,
   children,
   defaultOpen = false,
+  onNavigate,
 }: {
   icon: React.ElementType;
   label: string;
   children: SubNavItemConfig[];
   defaultOpen?: boolean;
+  onNavigate?: (path: string) => void;
 }) {
   const [open, setOpen] = React.useState(defaultOpen);
 
@@ -122,6 +126,7 @@ function CollapsibleNavItem({
                 key={child.id}
                 label={child.label}
                 active={child.active}
+                onClick={() => onNavigate?.(NAV_TO_PATHNAME[child.id] ?? "/")}
               />
             ))}
           </div>
@@ -137,26 +142,38 @@ function NavItem({
   icon: Icon,
   label,
   active = false,
+  disabled = false,
+  badge,
   onClick,
 }: {
   icon: React.ElementType;
   label: string;
   active?: boolean;
+  disabled?: boolean;
+  badge?: string;
   onClick?: () => void;
 }) {
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
       className={cn(
         "flex w-full items-center gap-4 rounded-full px-4 py-3 text-base transition-colors",
-        active
-          ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-          : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
+        disabled
+          ? "cursor-not-allowed opacity-50 text-sidebar-foreground"
+          : active
+            ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+            : "text-sidebar-foreground hover:bg-sidebar-accent/50 hover:text-sidebar-accent-foreground"
       )}
     >
       <Icon className="size-6 shrink-0" strokeWidth={1.5} />
       <span className="flex-1 truncate text-left font-sans">{label}</span>
+      {badge && (
+        <span className="shrink-0 rounded-full bg-sidebar-accent px-2 py-0.5 font-mono text-xs text-sidebar-foreground">
+          {badge}
+        </span>
+      )}
     </button>
   );
 }
@@ -173,6 +190,17 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 
 /* ── Main Sidebar Component ──────────────────────────────── */
 
+const NAV_TO_PATHNAME: Record<string, string> = {
+  dashboard: "/",
+  chat: "/chat",
+  metrics: "/metrics",
+  hooks: "/hooks",
+  accounts: "/accounts",
+  content: "/content",
+  ideas: "/ideas",
+  pipeline: "/pipeline",
+};
+
 export interface AppSidebarProps {
   /** Which nav item id is currently active */
   activeItem?: string;
@@ -180,6 +208,8 @@ export interface AppSidebarProps {
   userName?: string;
   /** User email */
   userEmail?: string;
+  /** Navigation callback */
+  onNavigate?: (path: string) => void;
   className?: string;
 }
 
@@ -187,14 +217,15 @@ export function AppSidebar({
   activeItem = "dashboard",
   userName = "Gabriel",
   userEmail = "ogabriel.barbosa22@g...",
+  onNavigate,
   className,
 }: AppSidebarProps) {
   const navigation: NavSectionConfig[] = [
     {
       title: "Home",
       items: [
-        { icon: Grid3X3, label: "Dashboard", id: "dashboard" },
-        { icon: MessageSquare, label: "Chat", id: "chat" },
+        { icon: Grid3X3, label: "Dashboard", id: "dashboard", disabled: true, badge: "Em breve" },
+        { icon: MessageSquare, label: "Chat", id: "chat", disabled: true, badge: "Em breve" },
       ],
     },
     {
@@ -228,7 +259,7 @@ export function AppSidebar({
       )}
     >
       {/* ── Header / Logo ──────────────────────────────────── */}
-      <div className="flex h-[88px] items-center border-b border-sidebar-border px-8 py-6">
+      <div className="flex h-[88px] items-center px-8 py-6">
         <div className="flex items-center gap-2">
           <WarRoomLogo className="text-primary" />
           <span className="font-mono text-lg font-bold text-primary leading-none">
@@ -257,6 +288,7 @@ export function AppSidebar({
                       label={item.label}
                       children={childrenWithActive}
                       defaultOpen={isContentOpen}
+                      onNavigate={onNavigate}
                     />
                   );
                 }
@@ -266,6 +298,9 @@ export function AppSidebar({
                     icon={item.icon}
                     label={item.label}
                     active={item.id === activeItem}
+                    disabled={item.disabled}
+                    badge={item.badge}
+                    onClick={() => onNavigate?.(NAV_TO_PATHNAME[item.id] ?? "/")}
                   />
                 );
               })}
