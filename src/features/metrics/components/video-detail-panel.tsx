@@ -55,7 +55,7 @@ export function VideoDetailPanel({ video, onClose }: VideoDetailPanelProps) {
       {/* Panel */}
       <div
         className={cn(
-          "fixed right-0 top-0 z-50 flex h-full w-[480px] flex-col",
+          "fixed right-0 top-0 z-50 flex h-full w-full flex-col sm:w-[480px]",
           "border-l border-border bg-card",
           "transform transition-transform duration-300 ease-in-out",
           video ? "translate-x-0" : "translate-x-full"
@@ -65,23 +65,14 @@ export function VideoDetailPanel({ video, onClose }: VideoDetailPanelProps) {
           <>
             {/* Header */}
             <div className="flex items-start justify-between gap-3 border-b border-border p-6 shrink-0">
-              <div className="flex items-start gap-3">
-                {/* Thumbnail */}
-                <div
-                  className="size-12 shrink-0 rounded-lg"
-                  style={{
-                    background: `linear-gradient(135deg, hsl(${video.title.length * 7 % 360}, 40%, 20%), hsl(${(video.title.length * 7 + 40) % 360}, 50%, 15%))`,
-                  }}
-                />
-                <div className="flex flex-col gap-1">
-                  <h2 className="text-sm font-semibold leading-snug text-foreground">
-                    {video.title}
-                  </h2>
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <span>@ogabarbosa</span>
-                    <span>·</span>
-                    <span>{video.date}</span>
-                  </div>
+              <div className="flex min-w-0 flex-1 flex-col gap-1">
+                <h2 className="truncate text-sm font-semibold leading-snug text-foreground">
+                  {video.title}
+                </h2>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <span>@ogabarbosa</span>
+                  <span>·</span>
+                  <span>{video.date}</span>
                 </div>
               </div>
               <button

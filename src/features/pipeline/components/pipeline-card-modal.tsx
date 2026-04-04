@@ -64,7 +64,7 @@ export function PipelineCardModal({ card, onClose }: PipelineCardModalProps) {
   const statusBg = STATUS_BG[card.status];
 
   return (
-    <Dialog open={!!card} onClose={onClose} className="max-w-[860px] rounded-2xl">
+    <Dialog open={!!card} onClose={onClose} className="mx-4 max-w-[860px] rounded-2xl sm:mx-auto">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border px-6 py-5">
         <div className="flex items-center gap-3">
@@ -99,9 +99,9 @@ export function PipelineCardModal({ card, onClose }: PipelineCardModalProps) {
       </div>
 
       {/* Body */}
-      <div className="flex h-[576px] overflow-hidden">
+      <div className="flex max-h-[70vh] flex-col overflow-y-auto sm:max-h-[576px] sm:flex-row sm:overflow-hidden">
         {/* Left Column */}
-        <div className="flex flex-1 flex-col gap-7 overflow-y-auto border-r border-border p-6">
+        <div className="flex flex-1 flex-col gap-7 sm:overflow-y-auto sm:border-r border-border p-4 sm:p-6">
           {/* Content Brief */}
           <div className="flex flex-col gap-3">
             <SectionLabel>Content Brief</SectionLabel>
@@ -166,7 +166,7 @@ export function PipelineCardModal({ card, onClose }: PipelineCardModalProps) {
         </div>
 
         {/* Right Column */}
-        <div className="flex w-[340px] shrink-0 flex-col gap-7 overflow-y-auto p-6">
+        <div className="flex w-full shrink-0 flex-col gap-7 border-t border-border sm:w-[340px] sm:border-t-0 sm:overflow-y-auto p-4 sm:p-6">
           {/* Details */}
           <div className="flex flex-col gap-3">
             <SectionLabel>Details</SectionLabel>

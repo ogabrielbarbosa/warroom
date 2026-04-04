@@ -1,5 +1,8 @@
-import { IdeasContent } from "@/features/ideas/components/ideas-content";
+import { getIdeas } from "@/lib/dal";
+import { IdeasRealtime } from "@/features/ideas/components/ideas-realtime";
 
-export default function IdeasPage() {
-  return <IdeasContent />;
+export default async function IdeasPage() {
+  const ideas = await getIdeas();
+
+  return <IdeasRealtime initialData={ideas} />;
 }

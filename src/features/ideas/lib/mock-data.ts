@@ -2,6 +2,49 @@
    IDEAS — Content Ideas Mock Data
    ═══════════════════════════════════════════════════════════ */
 
+export interface IdeaScript {
+  beat_1: string;
+  beat_2: string;
+  beat_3: string;
+}
+
+export interface IdeaSuggestion {
+  idea_number: number;
+  hook: string;
+  script: IdeaScript;
+  content_type: string;
+  why_it_works: string;
+  how_to_record: string;
+  hook_framework: string;
+  gabriel_situation: string;
+  reference_hook_views: string;
+}
+
+export interface IdeaMetadata {
+  _meta: {
+    context_docs: {
+      noe_docs: number;
+      gabriel_docs: number;
+      kallaway_docs: number;
+      competitor_docs: number;
+    };
+    generated_at: string;
+    source_views: number;
+    source_handle: string;
+    source_post_id: string;
+  };
+  ideas: IdeaSuggestion[];
+  original_arc: IdeaScript & { emotional_mechanism: string };
+  original_post: {
+    hook: string;
+    topic: string;
+    views: number;
+    handle: string;
+    framework: string;
+  };
+  analysis_summary: string;
+}
+
 export interface ContentIdea {
   id: string;
   title: string;
@@ -43,7 +86,52 @@ export interface ContentIdea {
   createdAt: string;
   videoUrl: string;
   thumbnail: string;
+  transcript: string;
+  metadata: IdeaMetadata | null;
+  /* Raw numeric values for sorting */
+  rawViews: number;
+  rawLikes: number;
+  rawComments: number;
 }
+
+export const SOURCE_OPTIONS: { value: string; label: string }[] = [
+  { value: "CLAUDE", label: "Claude" },
+  { value: "AUTOMATION_N8N", label: "Automation N8N" },
+];
+
+export const PLATFORM_OPTIONS = [
+  "Instagram",
+  "YouTube",
+  "TikTok",
+] as const;
+
+export const CONTENT_TYPE_OPTIONS = [
+  "Comparison",
+  "CTA/Lead Magnet",
+  "Demo/Showcase",
+  "Hot Take/React",
+  "Motivational",
+  "News/Update",
+  "Offer/Lead Magnet",
+  "Review/Analysis",
+  "Story/Narrative",
+  "Storytelling",
+  "Tips List",
+  "Tutorial",
+  "Tutorial/How-To",
+  "How-To",
+  "Opinion",
+  "Review",
+] as const;
+
+export type SortOption = "outlier" | "views" | "likes" | "comments";
+
+export const SORT_OPTIONS: { value: SortOption; label: string }[] = [
+  { value: "outlier", label: "Outlier Score" },
+  { value: "views", label: "Views" },
+  { value: "likes", label: "Likes" },
+  { value: "comments", label: "Comments" },
+];
 
 export const MOCK_IDEAS: ContentIdea[] = [
   {
@@ -93,6 +181,11 @@ export const MOCK_IDEAS: ContentIdea[] = [
     createdAt: "Mar 15, 2026 22:30",
     videoUrl: "https://instagram.com/p/example1",
     thumbnail: "/images/ideas/thumb-01.jpg",
+    rawViews: 124300,
+    rawLikes: 8412,
+    rawComments: 1247,
+    transcript: "",
+    metadata: null,
   },
   {
     id: "idea_02",
@@ -140,6 +233,11 @@ export const MOCK_IDEAS: ContentIdea[] = [
     createdAt: "Feb 28, 2026 18:00",
     videoUrl: "https://youtube.com/watch?v=example2",
     thumbnail: "/images/ideas/thumb-02.jpg",
+    rawViews: 89200,
+    rawLikes: 5891,
+    rawComments: 834,
+    transcript: "",
+    metadata: null,
   },
   {
     id: "idea_03",
@@ -188,6 +286,11 @@ export const MOCK_IDEAS: ContentIdea[] = [
     createdAt: "Mar 22, 2026 14:15",
     videoUrl: "https://tiktok.com/@techreviewer/video/example3",
     thumbnail: "/images/ideas/thumb-03.jpg",
+    rawViews: 245100,
+    rawLikes: 18923,
+    rawComments: 3412,
+    transcript: "",
+    metadata: null,
   },
   {
     id: "idea_04",
@@ -235,6 +338,11 @@ export const MOCK_IDEAS: ContentIdea[] = [
     createdAt: "Mar 25, 2026 20:00",
     videoUrl: "https://instagram.com/p/example4",
     thumbnail: "/images/ideas/thumb-04.jpg",
+    rawViews: 67800,
+    rawLikes: 4567,
+    rawComments: 891,
+    transcript: "",
+    metadata: null,
   },
   {
     id: "idea_05",
@@ -282,6 +390,11 @@ export const MOCK_IDEAS: ContentIdea[] = [
     createdAt: "Mar 15, 2026 16:45",
     videoUrl: "https://tiktok.com/@ogabarbosa/video/example5",
     thumbnail: "/images/ideas/thumb-05.jpg",
+    rawViews: 45200,
+    rawLikes: 3201,
+    rawComments: 567,
+    transcript: "",
+    metadata: null,
   },
   {
     id: "idea_06",
@@ -329,6 +442,11 @@ export const MOCK_IDEAS: ContentIdea[] = [
     createdAt: "Mar 20, 2026 12:00",
     videoUrl: "https://youtube.com/watch?v=example6",
     thumbnail: "/images/ideas/thumb-06.jpg",
+    rawViews: 156700,
+    rawLikes: 11234,
+    rawComments: 1567,
+    transcript: "",
+    metadata: null,
   },
   {
     id: "idea_07",
@@ -376,6 +494,11 @@ export const MOCK_IDEAS: ContentIdea[] = [
     createdAt: "Mar 31, 2026 19:00",
     videoUrl: "https://instagram.com/p/example7",
     thumbnail: "/images/ideas/thumb-07.jpg",
+    rawViews: 52100,
+    rawLikes: 3789,
+    rawComments: 645,
+    transcript: "",
+    metadata: null,
   },
   {
     id: "idea_08",
@@ -422,6 +545,11 @@ export const MOCK_IDEAS: ContentIdea[] = [
     createdAt: "Mar 18, 2026 10:30",
     videoUrl: "https://youtube.com/watch?v=example8",
     thumbnail: "/images/ideas/thumb-08.jpg",
+    rawViews: 34800,
+    rawLikes: 2456,
+    rawComments: 789,
+    transcript: "",
+    metadata: null,
   },
   {
     id: "idea_09",
@@ -469,5 +597,10 @@ export const MOCK_IDEAS: ContentIdea[] = [
     createdAt: "Apr 02, 2026 14:00",
     videoUrl: "https://youtube.com/watch?v=example9",
     thumbnail: "/images/ideas/thumb-09.jpg",
+    rawViews: 78400,
+    rawLikes: 6123,
+    rawComments: 1034,
+    transcript: "",
+    metadata: null,
   },
 ];

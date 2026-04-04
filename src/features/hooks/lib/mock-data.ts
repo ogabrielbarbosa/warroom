@@ -26,7 +26,7 @@ export const SOURCE_STYLES: Record<
   HookSource,
   { text: string; bg: string }
 > = {
-  Kallaway: { text: "text-[#FF8400]", bg: "bg-[#291C0F]" },
+  Kallaway: { text: "text-[#0053EA]", bg: "bg-[#0F1529]" },
   Noe: { text: "text-[#B2B2FF]", bg: "bg-[#222229]" },
 };
 

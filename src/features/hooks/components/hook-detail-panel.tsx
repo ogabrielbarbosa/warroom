@@ -82,7 +82,7 @@ export function HookDetailPanel({ hook, onClose }: HookDetailPanelProps) {
       {/* Panel */}
       <div
         className={cn(
-          "fixed right-0 top-0 z-50 flex h-full w-[480px] flex-col",
+          "fixed right-0 top-0 z-50 flex h-full w-full flex-col sm:w-[480px]",
           "border-l border-border bg-card",
           "transform transition-transform duration-300 ease-in-out",
           hook ? "translate-x-0" : "translate-x-full"
@@ -129,13 +129,22 @@ export function HookDetailPanel({ hook, onClose }: HookDetailPanelProps) {
 
                 <Divider />
 
-                {/* Framework & Structure */}
+                {/* Framework */}
                 <section className="flex flex-col gap-3">
-                  <SectionLabel>Framework &amp; Structure</SectionLabel>
-                  <div className="flex flex-wrap gap-2">
-                    <Pill>Framework: {hook.framework}</Pill>
-                    <Pill>Structure: {hook.structure}</Pill>
-                  </div>
+                  <SectionLabel>Framework</SectionLabel>
+                  <p className="text-sm leading-[1.6] text-foreground">
+                    {hook.framework}
+                  </p>
+                </section>
+
+                <Divider />
+
+                {/* Structure */}
+                <section className="flex flex-col gap-3">
+                  <SectionLabel>Structure</SectionLabel>
+                  <p className="text-sm leading-[1.6] text-foreground">
+                    {hook.structure}
+                  </p>
                 </section>
 
                 <Divider />

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatNumber, formatDuration } from "@/lib/format";
 import { PageHeader } from "@/components/ui/page-header";
 import type { PageHeaderTab } from "@/components/ui/page-header";
 import { Card } from "@/components/ui/card";
@@ -14,7 +15,11 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import { MOCK_VIDEOS, type ContentVideo } from "../lib/mock-data";
+import type {
+  ContentVideo,
+  AccountStat,
+  ContentSnapshot,
+} from "../lib/mock-data";
 import { VideoDetailPanel } from "./video-detail-panel";
 
 /* ── Types ──────────────────────────────────────────────── */
@@ -26,7 +31,7 @@ interface KpiCard {
   trend: "up" | "down" | "neutral";
 }
 
-/* ── Constants ──────────────────────────────────────────── */
+/* ── Constants ────────────────────────���─────────────────── */
 
 const TABS: PageHeaderTab[] = [
   { label: "All Metrics", value: "all" },
@@ -36,19 +41,11 @@ const TABS: PageHeaderTab[] = [
 const TIME_RANGES = ["7d", "30d", "90d", "All Time", "Custom"] as const;
 type TimeRange = (typeof TIME_RANGES)[number];
 
-const KPI_ROW_1: KpiCard[] = [
-  { label: "FOLLOWERS", value: "18.2K", change: "↑ 8%", trend: "up" },
-  { label: "TOTAL VIEWS", value: "1.88M", change: "↑ 12%", trend: "up" },
-  { label: "TOTAL LIKES", value: "92.5K", change: "↑ 15%", trend: "up" },
-  { label: "COMMENTS", value: "43.9K", change: "↑ 22%", trend: "up" },
-];
-
-const KPI_ROW_2: KpiCard[] = [
-  { label: "SHARES", value: "7.0K", change: "↓ 3%", trend: "down" },
-  { label: "SAVES", value: "29.4K", change: "↑ 18%", trend: "up" },
-  { label: "AVG WATCH TIME", value: "0:38", change: "↑ 5%", trend: "up" },
-  { label: "POSTS", value: "64", change: "— 0%", trend: "neutral" },
-];
+const DAYS_MAP: Record<string, number> = {
+  "7d": 7,
+  "30d": 30,
+  "90d": 90,
+};
 
 const CHART_CARDS = [
   { title: "Views Over Time" },
@@ -57,7 +54,50 @@ const CHART_CARDS = [
   { title: "Avg Views Per Post" },
 ];
 
-/* ── Time Range Filter ──────────────────────────────────── */
+/* ── Helpers ───────────────────────────────────────────── */
+
+function filterByTimeRange(
+  videos: ContentVideo[],
+  range: TimeRange
+): ContentVideo[] {
+  if (range === "All Time" || range === "Custom") return videos;
+  const days = DAYS_MAP[range];
+  if (!days) return videos;
+  const cutoff = new Date(Date.now() - days * 86_400_000);
+  return videos.filter((v) => v.rawDate && new Date(v.rawDate) >= cutoff);
+}
+
+function computeKpis(
+  filtered: ContentVideo[],
+  accountStats: AccountStat[]
+): { row1: KpiCard[]; row2: KpiCard[] } {
+  const totalViews = filtered.reduce((s, v) => s + v.views, 0);
+  const totalLikes = filtered.reduce((s, v) => s + v.likes, 0);
+  const totalComments = filtered.reduce((s, v) => s + v.comments, 0);
+  const totalShares = filtered.reduce((s, v) => s + v.shares, 0);
+  const totalSaves = filtered.reduce((s, v) => s + v.saves, 0);
+  const avgWatch = filtered.length
+    ? filtered.reduce((s, v) => s + v.avgWatchTimeSeconds, 0) / filtered.length
+    : 0;
+  const latestFollowers = accountStats.at(-1)?.followerCount ?? 0;
+
+  return {
+    row1: [
+      { label: "FOLLOWERS", value: formatNumber(latestFollowers), change: "—", trend: "neutral" },
+      { label: "TOTAL VIEWS", value: formatNumber(totalViews), change: "—", trend: "neutral" },
+      { label: "TOTAL LIKES", value: formatNumber(totalLikes), change: "—", trend: "neutral" },
+      { label: "COMMENTS", value: formatNumber(totalComments), change: "—", trend: "neutral" },
+    ],
+    row2: [
+      { label: "SHARES", value: formatNumber(totalShares), change: "—", trend: "neutral" },
+      { label: "SAVES", value: formatNumber(totalSaves), change: "—", trend: "neutral" },
+      { label: "AVG WATCH TIME", value: formatDuration(avgWatch), change: "—", trend: "neutral" },
+      { label: "POSTS", value: filtered.length.toString(), change: "—", trend: "neutral" },
+    ],
+  };
+}
+
+/* ── Time Range Filter ──────────────────────────��───────── */
 
 function TimeRangeFilter({
   value,
@@ -67,7 +107,7 @@ function TimeRangeFilter({
   onChange: (v: TimeRange) => void;
 }) {
   return (
-    <div className="flex items-center gap-1 rounded-full bg-muted p-1">
+    <div className="flex items-center gap-1 overflow-x-auto rounded-full bg-muted p-1">
       {TIME_RANGES.map((range) => (
         <button
           key={range}
@@ -87,7 +127,7 @@ function TimeRangeFilter({
   );
 }
 
-/* ── KPI Card ───────────────────────────────────────────── */
+/* ── KPI Card ──────────────────────────────────���────────── */
 
 function KpiStatCard({ label, value, change, trend }: KpiCard) {
   return (
@@ -109,13 +149,15 @@ function KpiStatCard({ label, value, change, trend }: KpiCard) {
         >
           {change}
         </span>
-        <span className="text-xs text-muted-foreground">vs prev period</span>
+        {change !== "—" && (
+          <span className="text-xs text-muted-foreground">vs prev period</span>
+        )}
       </div>
     </Card>
   );
 }
 
-/* ── Chart Placeholder ──────────────────────────────────── */
+/* ── Chart Placeholder ────────────────────���─────────────── */
 
 function ChartCard({ title }: { title: string }) {
   return (
@@ -170,10 +212,27 @@ function OutlierBadge({
 
 /* ── Main Component ─────────────────────────────────────── */
 
-export function MetricsContent() {
+export function MetricsContent({
+  videos,
+  accountStats,
+}: {
+  videos: ContentVideo[];
+  accountStats: AccountStat[];
+  contentSnapshots: ContentSnapshot[];
+}) {
   const [activeTab, setActiveTab] = useState("all");
-  const [timeRange, setTimeRange] = useState<TimeRange>("30d");
+  const [timeRange, setTimeRange] = useState<TimeRange>("All Time");
   const [selectedVideo, setSelectedVideo] = useState<ContentVideo | null>(null);
+
+  const filteredVideos = useMemo(
+    () => filterByTimeRange(videos, timeRange),
+    [videos, timeRange]
+  );
+
+  const kpis = useMemo(
+    () => computeKpis(filteredVideos, accountStats),
+    [filteredVideos, accountStats]
+  );
 
   function handleRowClick(video: ContentVideo) {
     setSelectedVideo((prev) => (prev?.id === video.id ? null : video));
@@ -195,32 +254,32 @@ export function MetricsContent() {
         }
       />
 
-      <div className="flex-1 overflow-auto p-8">
+      <div className="flex-1 overflow-auto p-4 md:p-8">
         {activeTab === "all" && (
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-3 md:gap-4">
             {/* KPI Row 1 */}
-            <div className="grid grid-cols-4 gap-3">
-              {KPI_ROW_1.map((kpi) => (
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+              {kpis.row1.map((kpi) => (
                 <KpiStatCard key={kpi.label} {...kpi} />
               ))}
             </div>
 
             {/* KPI Row 2 */}
-            <div className="grid grid-cols-4 gap-3">
-              {KPI_ROW_2.map((kpi) => (
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+              {kpis.row2.map((kpi) => (
                 <KpiStatCard key={kpi.label} {...kpi} />
               ))}
             </div>
 
             {/* Charts Row 1 */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
               {CHART_CARDS.slice(0, 2).map((chart) => (
                 <ChartCard key={chart.title} title={chart.title} />
               ))}
             </div>
 
             {/* Charts Row 2 */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
               {CHART_CARDS.slice(2).map((chart) => (
                 <ChartCard key={chart.title} title={chart.title} />
               ))}
@@ -229,7 +288,8 @@ export function MetricsContent() {
         )}
 
         {activeTab === "content" && (
-          <Table className="border-0">
+          <div className="overflow-x-auto">
+          <Table className="border-0 min-w-[700px]">
             <TableHeader>
               <TableRow className="border-b border-border hover:bg-transparent">
                 <TableHead className="w-auto">Video</TableHead>
@@ -243,7 +303,7 @@ export function MetricsContent() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {MOCK_VIDEOS.map((video) => {
+              {filteredVideos.map((video) => {
                 const isSelected = selectedVideo?.id === video.id;
                 return (
                   <TableRow
@@ -258,7 +318,6 @@ export function MetricsContent() {
                   >
                     <TableCell className="h-auto py-3">
                       <div className="flex items-center gap-2.5">
-                        <VideoThumbnail title={video.title} />
                         <span className="text-[13px] font-medium text-foreground line-clamp-1">
                           {video.title}
                         </span>
@@ -291,8 +350,16 @@ export function MetricsContent() {
                   </TableRow>
                 );
               })}
+              {filteredVideos.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={8} className="h-32 text-center text-muted-foreground">
+                    No content found for this period.
+                  </TableCell>
+                </TableRow>
+              )}
             </TableBody>
           </Table>
+          </div>
         )}
       </div>
 

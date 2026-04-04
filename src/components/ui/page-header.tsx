@@ -31,7 +31,7 @@ export function PageHeader({
         className
       )}
     >
-      <div className="flex items-center justify-between px-8 pt-6 pb-4">
+      <div className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:justify-between md:px-8 md:py-6">
         <div>
           <h1 className="font-mono text-lg font-bold text-foreground">
             {title}
@@ -40,12 +40,12 @@ export function PageHeader({
         </div>
 
         {filters && (
-          <div className="flex items-center gap-3">{filters}</div>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">{filters}</div>
         )}
       </div>
 
       {tabs && tabs.length > 0 && (
-        <div className="flex gap-6 px-8">
+        <div className="flex gap-4 overflow-x-auto px-4 sm:gap-6 md:px-8">
           {tabs.map((tab) => {
             const isActive = tab.value === activeTab;
             return (

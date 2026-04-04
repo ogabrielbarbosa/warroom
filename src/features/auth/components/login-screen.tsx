@@ -1,29 +1,21 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/providers/auth-provider";
+import { useActionState } from "react";
+import { login, type LoginState } from "../actions/login";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Zap } from "lucide-react";
 
-export function LoginScreen() {
-  const { login } = useAuth();
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+const initialState: LoginState = {};
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    login(email || "user@warroom.dev", password);
-    router.push("/");
-  };
+export function LoginScreen() {
+  const [state, formAction, pending] = useActionState(login, initialState);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       {/* Glow background effect */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 size-[600px] rounded-full bg-primary/5 blur-[120px]" />
+        <div className="absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2 size-[300px] rounded-full bg-primary/5 blur-[80px] sm:size-[600px] sm:blur-[120px]" />
       </div>
 
       <div className="relative z-10 w-full max-w-sm">
@@ -43,7 +35,7 @@ export function LoginScreen() {
         </div>
 
         {/* Login form */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+        <form action={formAction} className="flex flex-col gap-5">
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="email"
@@ -53,11 +45,11 @@ export function LoginScreen() {
             </label>
             <Input
               id="email"
+              name="email"
               type="email"
               placeholder="you@warroom.dev"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
+              required
             />
           </div>
 
@@ -70,21 +62,29 @@ export function LoginScreen() {
             </label>
             <Input
               id="password"
+              name="password"
               type="password"
               placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
+              required
             />
           </div>
 
-          <Button type="submit" variant="default" size="lg" className="w-full mt-2">
-            Sign in
-          </Button>
+          {state.error && (
+            <p className="text-sm text-destructive text-center">
+              {state.error}
+            </p>
+          )}
 
-          <p className="text-center text-xs text-muted-foreground">
-            Temporary login — any credentials work
-          </p>
+          <Button
+            type="submit"
+            variant="default"
+            size="lg"
+            className="w-full mt-2"
+            disabled={pending}
+          >
+            {pending ? "Signing in..." : "Sign in"}
+          </Button>
         </form>
       </div>
     </div>

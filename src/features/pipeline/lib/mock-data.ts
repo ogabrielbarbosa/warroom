@@ -33,7 +33,7 @@ export interface PipelineCard {
 export const STATUS_COLORS: Record<PipelineStatus, string> = {
   Idea: "#B8B9B6",
   Scripted: "#6B8AFF",
-  Filming: "#FF8400",
+  Filming: "#0053EA",
   Editing: "#B07CFF",
   Posted: "#4ADE80",
 };

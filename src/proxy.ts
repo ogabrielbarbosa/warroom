@@ -1,22 +1,13 @@
 import { type NextRequest, NextResponse } from "next/server";
-
-/**
- * Next.js 16 Proxy (replaces middleware).
- * TODO: Replace with Supabase Auth session check when backend is integrated.
- *
- * Since auth is currently localStorage-based (client-only), this proxy
- * only handles route structure. Real auth checks happen in (app)/layout.tsx.
- * When Supabase is added, this will verify the session cookie server-side.
- */
+import { createServerClient } from "@supabase/ssr";
 
 const publicRoutes = ["/login"];
 
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Allow public routes and static assets
+  // Skip static assets and API routes
   if (
-    publicRoutes.some((route) => pathname.startsWith(route)) ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
     pathname.includes(".")
@@ -24,12 +15,55 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // TODO: When Supabase is integrated, check session cookie here:
-  // const supabase = createServerClient(...)
-  // const { data: { session } } = await supabase.auth.getSession()
-  // if (!session) return NextResponse.redirect(new URL('/login', request.url))
+  // Create Supabase client with cookie access from request/response
+  // Proxy cannot use next/headers — must use request.cookies directly
+  let response = NextResponse.next({ request });
 
-  return NextResponse.next();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value)
+          );
+          response = NextResponse.next({ request });
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options)
+          );
+        },
+      },
+    }
+  );
+
+  // Validate session — getUser() verifies JWT against Supabase Auth server
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const isPublicRoute = publicRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
+
+  // Not authenticated and trying to access protected route → redirect to login
+  if (!user && !isPublicRoute) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
+
+  // Authenticated user on login page → redirect to app
+  if (user && isPublicRoute) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+    return NextResponse.redirect(url);
+  }
+
+  return response;
 }
 
 export const config = {

@@ -210,6 +210,10 @@ export interface AppSidebarProps {
   userEmail?: string;
   /** Navigation callback */
   onNavigate?: (path: string) => void;
+  /** Mobile open state */
+  open?: boolean;
+  /** Close callback for mobile */
+  onClose?: () => void;
   className?: string;
 }
 
@@ -218,14 +222,16 @@ export function AppSidebar({
   userName = "Gabriel",
   userEmail = "ogabriel.barbosa22@g...",
   onNavigate,
+  open,
+  onClose,
   className,
 }: AppSidebarProps) {
   const navigation: NavSectionConfig[] = [
     {
       title: "Home",
       items: [
-        { icon: Grid3X3, label: "Dashboard", id: "dashboard", disabled: true, badge: "Em breve" },
-        { icon: MessageSquare, label: "Chat", id: "chat", disabled: true, badge: "Em breve" },
+        { icon: Grid3X3, label: "Dashboard", id: "dashboard", disabled: true, badge: "Soon" },
+        { icon: MessageSquare, label: "Chat", id: "chat", disabled: true, badge: "Soon" },
       ],
     },
     {
@@ -251,7 +257,12 @@ export function AppSidebar({
   const contentSubIds = ["ideas", "pipeline"];
   const isContentOpen = contentSubIds.includes(activeItem);
 
-  return (
+  function handleNavigate(path: string) {
+    onNavigate?.(path);
+    onClose?.();
+  }
+
+  const sidebarContent = (
     <aside
       className={cn(
         "flex h-full w-[280px] shrink-0 flex-col bg-sidebar border-r border-sidebar-border",
@@ -261,8 +272,7 @@ export function AppSidebar({
       {/* ── Header / Logo ──────────────────────────────────── */}
       <div className="flex h-[88px] items-center px-8 py-6">
         <div className="flex items-center gap-2">
-          <WarRoomLogo className="text-primary" />
-          <span className="font-mono text-lg font-bold text-primary leading-none">
+          <span className="font-mono text-lg font-bold text-sidebar-accent-foreground leading-none">
             War Room
           </span>
         </div>
@@ -276,7 +286,6 @@ export function AppSidebar({
             <div className="flex flex-col">
               {section.items.map((item) => {
                 if (item.children) {
-                  // Mark children active
                   const childrenWithActive = item.children.map((c) => ({
                     ...c,
                     active: c.id === activeItem,
@@ -288,7 +297,7 @@ export function AppSidebar({
                       label={item.label}
                       children={childrenWithActive}
                       defaultOpen={isContentOpen}
-                      onNavigate={onNavigate}
+                      onNavigate={handleNavigate}
                     />
                   );
                 }
@@ -300,7 +309,7 @@ export function AppSidebar({
                     active={item.id === activeItem}
                     disabled={item.disabled}
                     badge={item.badge}
-                    onClick={() => onNavigate?.(NAV_TO_PATHNAME[item.id] ?? "/")}
+                    onClick={() => handleNavigate(NAV_TO_PATHNAME[item.id] ?? "/")}
                   />
                 );
               })}
@@ -325,6 +334,26 @@ export function AppSidebar({
         />
       </div>
     </aside>
+  );
+
+  return (
+    <>
+      {/* Desktop sidebar — always visible */}
+      <div className="hidden md:flex">{sidebarContent}</div>
+
+      {/* Mobile drawer overlay */}
+      {open && (
+        <div className="fixed inset-0 z-50 flex md:hidden">
+          <div
+            className="absolute inset-0 bg-black/60"
+            onClick={onClose}
+          />
+          <div className="relative z-10 animate-in slide-in-from-left duration-200">
+            {sidebarContent}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

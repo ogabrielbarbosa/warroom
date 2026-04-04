@@ -77,7 +77,7 @@ export function AccountDetailPanel({
       {/* Panel */}
       <div
         className={cn(
-          "fixed right-0 top-0 z-50 flex h-full w-[480px] flex-col",
+          "fixed right-0 top-0 z-50 flex h-full w-full flex-col sm:w-[480px]",
           "border-l border-border bg-card",
           "transform transition-transform duration-300 ease-in-out",
           account ? "translate-x-0" : "translate-x-full"
@@ -116,12 +116,6 @@ export function AccountDetailPanel({
                 <section className="flex flex-col gap-3">
                   <SectionLabel>Profile</SectionLabel>
                   <div className="flex items-center gap-4">
-                    <div
-                      className="size-14 shrink-0 rounded-full"
-                      style={{
-                        background: `linear-gradient(135deg, hsl(${account.username.length * 23 % 360}, 40%, 25%), hsl(${(account.username.length * 23 + 40) % 360}, 50%, 18%))`,
-                      }}
-                    />
                     <div className="flex flex-col gap-0.5">
                       <span className="font-mono text-lg font-bold text-foreground">
                         {account.displayName}

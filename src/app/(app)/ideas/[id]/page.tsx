@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { MOCK_IDEAS } from "@/features/ideas/lib/mock-data";
+import { getIdeaById } from "@/lib/dal";
 import { IdeaDetailContent } from "@/features/ideas/components/idea-detail-content";
 
 export default async function IdeaDetailPage({
@@ -8,7 +8,7 @@ export default async function IdeaDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const idea = MOCK_IDEAS.find((i) => i.id === id);
+  const idea = await getIdeaById(id);
 
   if (!idea) {
     notFound();

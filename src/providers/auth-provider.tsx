@@ -7,12 +7,13 @@ import {
   useEffect,
   type ReactNode,
 } from "react";
+import { createClient } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
 
 interface AuthContextValue {
+  user: User | null;
   isLoggedIn: boolean;
-  login: (email: string, password: string) => void;
-  logout: () => void;
-  user: { email: string } | null;
+  signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -24,41 +25,37 @@ export function useAuth() {
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState<{ email: string } | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [hydrated, setHydrated] = useState(false);
+  const supabase = createClient();
 
   useEffect(() => {
-    const stored = localStorage.getItem("warroom_auth");
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        setIsLoggedIn(true);
-        setUser(parsed);
-      } catch {
-        localStorage.removeItem("warroom_auth");
-      }
-    }
-    setHydrated(true);
-  }, []);
+    // Get initial session
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      setUser(user);
+      setHydrated(true);
+    });
 
-  const login = (email: string, _password: string) => {
-    const userData = { email };
-    localStorage.setItem("warroom_auth", JSON.stringify(userData));
-    setUser(userData);
-    setIsLoggedIn(true);
-  };
+    // Listen for auth changes (login, logout, token refresh)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
 
-  const logout = () => {
-    localStorage.removeItem("warroom_auth");
+    return () => subscription.unsubscribe();
+  }, [supabase.auth]);
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
     setUser(null);
-    setIsLoggedIn(false);
+    window.location.href = "/login";
   };
 
   if (!hydrated) return null;
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout, user }}>
+    <AuthContext.Provider value={{ user, isLoggedIn: !!user, signOut }}>
       {children}
     </AuthContext.Provider>
   );

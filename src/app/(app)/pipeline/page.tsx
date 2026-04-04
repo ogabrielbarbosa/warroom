@@ -1,5 +1,8 @@
-import { PipelineContent } from "@/features/pipeline/components/pipeline-content";
+import { getPipelineCards } from "@/lib/dal";
+import { PipelineRealtime } from "@/features/pipeline/components/pipeline-realtime";
 
-export default function PipelinePage() {
-  return <PipelineContent />;
+export default async function PipelinePage() {
+  const cards = await getPipelineCards();
+
+  return <PipelineRealtime initialData={cards} />;
 }

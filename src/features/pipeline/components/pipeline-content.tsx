@@ -13,7 +13,6 @@ import {
   Filter,
 } from "lucide-react";
 import {
-  MOCK_PIPELINE_CARDS,
   type PipelineCard,
   type PipelineStatus,
 } from "../lib/mock-data";
@@ -36,12 +35,12 @@ const VIEW_ICONS = [
   { icon: Clock, label: "Timeline", active: false },
 ];
 
-export function PipelineContent() {
+export function PipelineContent({ cards }: { cards: PipelineCard[] }) {
   const [selectedCard, setSelectedCard] = useState<PipelineCard | null>(null);
 
   const cardsByStatus = STATUSES.reduce(
     (acc, status) => {
-      acc[status] = MOCK_PIPELINE_CARDS.filter((c) => c.status === status);
+      acc[status] = cards.filter((c) => c.status === status);
       return acc;
     },
     {} as Record<PipelineStatus, PipelineCard[]>
@@ -49,8 +48,8 @@ export function PipelineContent() {
 
   return (
     <div className="flex h-full w-full">
-      {/* View Sidebar */}
-      <div className="flex w-14 shrink-0 flex-col items-center justify-between border-r border-border bg-sidebar py-4">
+      {/* View Sidebar — hidden on mobile */}
+      <div className="hidden sm:flex w-14 shrink-0 flex-col items-center justify-between border-r border-border bg-sidebar py-4">
         <div className="flex flex-col items-center gap-1">
           {/* Action buttons */}
           <button
@@ -102,7 +101,7 @@ export function PipelineContent() {
       {/* Main Area */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Kanban Board */}
-        <div className="flex flex-1 gap-4 overflow-x-auto p-6">
+        <div className="flex flex-1 gap-3 overflow-x-auto p-4 md:gap-4 md:p-6">
           {STATUSES.map((status) => (
             <KanbanColumn
               key={status}
