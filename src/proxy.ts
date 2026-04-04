@@ -53,13 +53,15 @@ export async function proxy(request: NextRequest) {
   if (!user && !isPublicRoute) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
+    url.searchParams.set("redirectTo", pathname);
     return NextResponse.redirect(url);
   }
 
-  // Authenticated user on login page → redirect to app
+  // Authenticated user on login page → redirect to app (or saved redirect)
   if (user && isPublicRoute) {
     const url = request.nextUrl.clone();
-    url.pathname = "/";
+    url.pathname = request.nextUrl.searchParams.get("redirectTo") || "/";
+    url.searchParams.delete("redirectTo");
     return NextResponse.redirect(url);
   }
 

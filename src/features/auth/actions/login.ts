@@ -29,7 +29,8 @@ export async function login(
     return { error: error.message };
   }
 
-  redirect("/");
+  const redirectTo = formData.get("redirectTo") as string;
+  redirect(redirectTo && redirectTo.startsWith("/") ? redirectTo : "/");
 }
 
 export async function signOut() {

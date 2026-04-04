@@ -6,6 +6,12 @@ export const metadata: Metadata = {
   description: "Sign in to Warroom Command Center",
 };
 
-export default function LoginPage() {
-  return <LoginScreen />;
+export default async function LoginPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ redirectTo?: string }>;
+}) {
+  const { redirectTo } = await searchParams;
+
+  return <LoginScreen redirectTo={redirectTo} />;
 }

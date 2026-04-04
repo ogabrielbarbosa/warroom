@@ -8,7 +8,7 @@ import { Zap } from "lucide-react";
 
 const initialState: LoginState = {};
 
-export function LoginScreen() {
+export function LoginScreen({ redirectTo }: { redirectTo?: string }) {
   const [state, formAction, pending] = useActionState(login, initialState);
 
   return (
@@ -21,9 +21,6 @@ export function LoginScreen() {
       <div className="relative z-10 w-full max-w-sm">
         {/* Logo */}
         <div className="mb-10 flex flex-col items-center gap-3">
-          <div className="flex items-center justify-center size-12 rounded-full bg-primary">
-            <Zap className="size-6 text-primary-foreground" />
-          </div>
           <div className="text-center">
             <h1 className="font-mono text-2xl font-bold tracking-tight text-foreground">
               warroom
@@ -36,6 +33,9 @@ export function LoginScreen() {
 
         {/* Login form */}
         <form action={formAction} className="flex flex-col gap-5">
+          {redirectTo && (
+            <input type="hidden" name="redirectTo" value={redirectTo} />
+          )}
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor="email"

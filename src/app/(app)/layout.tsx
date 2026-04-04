@@ -29,8 +29,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     )?.[1] ??
     "hooks";
 
-  // Proxy handles redirect to /login — this is a fallback for hydration
-  if (!isLoggedIn) return null;
+  // Proxy already guards unauthenticated access — skip client-side redirect
+  // to avoid a blank screen during hydration after server-side login
 
   return (
     <div className="flex h-screen overflow-hidden bg-background">

@@ -30,9 +30,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const supabase = createClient();
 
   useEffect(() => {
-    // Get initial session
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
+    // Get initial session from cookies (no network call — fast hydration)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
       setHydrated(true);
     });
 
@@ -41,10 +41,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
+      if (!hydrated) setHydrated(true);
     });
 
     return () => subscription.unsubscribe();
-  }, [supabase.auth]);
+  }, [supabase.auth, hydrated]);
 
   const signOut = async () => {
     await supabase.auth.signOut();
@@ -52,11 +53,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     window.location.href = "/login";
   };
 
-  if (!hydrated) return null;
-
   return (
     <AuthContext.Provider value={{ user, isLoggedIn: !!user, signOut }}>
-      {children}
+      {hydrated ? children : null}
     </AuthContext.Provider>
   );
 }
