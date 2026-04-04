@@ -15,6 +15,7 @@ const PATHNAME_TO_NAV: Record<string, string> = {
   "/content": "content",
   "/ideas": "ideas",
   "/pipeline": "pipeline",
+
 };
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
