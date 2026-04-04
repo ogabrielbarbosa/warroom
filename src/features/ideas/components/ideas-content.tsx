@@ -59,7 +59,7 @@ function FilterDropdown({
       </button>
 
       {open && (
-        <div className="absolute left-0 top-full z-50 mt-1 min-w-[200px] overflow-hidden rounded-lg border border-[#2E2E2E] bg-[#111111] shadow-xl">
+        <div className="absolute left-0 top-full z-50 mt-1 min-w-[200px] max-h-[252px] overflow-y-auto rounded-lg border border-[#2E2E2E] bg-[#111111] shadow-xl">
           {/* All option */}
           <button
             onClick={() => {
@@ -163,10 +163,10 @@ function ClaudeIcon({ className }: { className?: string }) {
     >
       <title>Antigravity</title>
       <path
-        clip-rule="evenodd"
+        clipRule="evenodd"
         d="M20.998 10.949H24v3.102h-3v3.028h-1.487V20H18v-2.921h-1.487V20H15v-2.921H9V20H7.488v-2.921H6V20H4.487v-2.921H3V14.05H0V10.95h3V5h17.998v5.949zM6 10.949h1.488V8.102H6v2.847zm10.51 0H18V8.102h-1.49v2.847z"
         fill="#D97757"
-        fill-rule="evenodd"
+        fillRule="evenodd"
       />
     </svg>
   );
@@ -182,10 +182,10 @@ function N8nIcon({ className }: { className?: string }) {
     >
       <title>n8n</title>
       <path
-        clip-rule="evenodd"
+        clipRule="evenodd"
         d="M24 8.4c0 1.325-1.102 2.4-2.462 2.4-1.146 0-2.11-.765-2.384-1.8h-3.436c-.602 0-1.115.424-1.214 1.003l-.101.592a2.38 2.38 0 01-.8 1.405c.412.354.704.844.8 1.405l.1.592A1.222 1.222 0 0015.719 15h.975c.273-1.035 1.237-1.8 2.384-1.8 1.36 0 2.461 1.075 2.461 2.4S20.436 18 19.078 18c-1.147 0-2.11-.765-2.384-1.8h-.975c-1.204 0-2.23-.848-2.428-2.005l-.101-.592a1.222 1.222 0 00-1.214-1.003H10.97c-.308.984-1.246 1.7-2.356 1.7-1.11 0-2.048-.716-2.355-1.7H4.817c-.308.984-1.246 1.7-2.355 1.7C1.102 14.3 0 13.225 0 11.9s1.102-2.4 2.462-2.4c1.183 0 2.172.815 2.408 1.9h1.337c.236-1.085 1.225-1.9 2.408-1.9 1.184 0 2.172.815 2.408 1.9h.952c.601 0 1.115-.424 1.213-1.003l.102-.592c.198-1.157 1.225-2.005 2.428-2.005h3.436c.274-1.035 1.238-1.8 2.384-1.8C22.898 6 24 7.075 24 8.4zm-1.23 0c0 .663-.552 1.2-1.232 1.2-.68 0-1.23-.537-1.23-1.2 0-.663.55-1.2 1.23-1.2.68 0 1.231.537 1.231 1.2zM2.461 13.1c.68 0 1.23-.537 1.23-1.2 0-.663-.55-1.2-1.23-1.2-.68 0-1.231.537-1.231 1.2 0 .663.55 1.2 1.23 1.2zm6.153 0c.68 0 1.231-.537 1.231-1.2 0-.663-.55-1.2-1.23-1.2-.68 0-1.231.537-1.231 1.2 0 .663.55 1.2 1.23 1.2zm10.462 3.7c.68 0 1.23-.537 1.23-1.2 0-.663-.55-1.2-1.23-1.2-.68 0-1.23.537-1.23 1.2 0 .663.55 1.2 1.23 1.2z"
         fill="#EA4B71"
-        fill-rule="evenodd"
+        fillRule="evenodd"
       />
     </svg>
   );
@@ -230,7 +230,7 @@ function IdeaCard({ idea }: { idea: ContentIdea }) {
           </span>
         </div>
         {/* Outlier Badge */}
-        <span className="absolute right-3 top-3 rounded-full bg-[#0053EA] px-2.5 py-1 font-mono text-xs font-bold text-white">
+        <span className="absolute right-3 top-3 rounded-full bg-[#FF8400] px-2.5 py-1 font-mono text-xs font-bold text-[#111111]">
           ⚡ {idea.outlierScore}
         </span>
       </div>
@@ -276,7 +276,13 @@ export function IdeasContent({ ideas }: { ideas: ContentIdea[] }) {
   const [source, setSource] = useState("");
   const [platform, setPlatform] = useState("");
   const [contentType, setContentType] = useState("");
+  const [account, setAccount] = useState("");
   const [sortBy, setSortBy] = useState<SortOption>("outlier");
+
+  const accountOptions = useMemo(() => {
+    const handles = [...new Set(ideas.map((i) => i.handle).filter(Boolean))].sort();
+    return handles.map((h) => ({ value: h, label: h }));
+  }, [ideas]);
 
   const filtered = useMemo(() => {
     let result = ideas;
@@ -290,6 +296,11 @@ export function IdeasContent({ ideas }: { ideas: ContentIdea[] }) {
           i.handle.toLowerCase().includes(q) ||
           i.topic.toLowerCase().includes(q),
       );
+    }
+
+    // Account filter
+    if (account) {
+      result = result.filter((i) => i.handle === account);
     }
 
     // Source filter
@@ -327,7 +338,7 @@ export function IdeasContent({ ideas }: { ideas: ContentIdea[] }) {
     });
 
     return result;
-  }, [ideas, search, source, platform, contentType, sortBy]);
+  }, [ideas, search, source, platform, contentType, account, sortBy]);
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
@@ -336,6 +347,12 @@ export function IdeasContent({ ideas }: { ideas: ContentIdea[] }) {
         subtitle={`${filtered.length} videos`}
         filters={
           <>
+            <FilterDropdown
+              label="Account"
+              value={account}
+              options={accountOptions}
+              onChange={setAccount}
+            />
             <FilterDropdown
               label="Source"
               value={source}

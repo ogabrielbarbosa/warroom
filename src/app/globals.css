@@ -79,7 +79,7 @@
    ─────────────────────────────────────────────────────────── */
 :root {
   /* Core */
-  --background: #F0F2F5;
+  --background: #F2F3F0;
   --foreground: #111111;
   --card: #FFFFFF;
   --card-foreground: #111111;
@@ -87,17 +87,17 @@
   --popover-foreground: #111111;
 
   /* Brand */
-  --primary: #0053EA;
-  --primary-foreground: #FFFFFF;
-  --secondary: #E5E8ED;
+  --primary: #FF8400;
+  --primary-foreground: #111111;
+  --secondary: #E7E8E5;
   --secondary-foreground: #111111;
 
   /* Muted */
-  --muted: #F0F2F5;
-  --muted-foreground: #64687A;
+  --muted: #F2F3F0;
+  --muted-foreground: #666666;
 
   /* Accent */
-  --accent: #F0F2F5;
+  --accent: #F2F3F0;
   --accent-foreground: #111111;
 
   /* Destructive */
@@ -105,16 +105,16 @@
   --destructive-foreground: #FFFFFF;
 
   /* Border / Input / Ring */
-  --border: #C9CCD4;
-  --input: #C9CCD4;
-  --ring: #64687A;
+  --border: #CBCCC9;
+  --input: #CBCCC9;
+  --ring: #666666;
 
   /* Semantic: Success */
   --color-success-bg: #DFE6E1;
   --color-success-fg: #004D1A;
 
   /* Semantic: Warning */
-  --color-warning-bg: #E6E3D8;
+  --color-warning-bg: #E9E3D8;
   --color-warning-fg: #804200;
 
   /* Semantic: Error */
@@ -122,27 +122,27 @@
   --color-error-fg: #8C1C00;
 
   /* Semantic: Info */
-  --color-info-bg: #DDE1EE;
-  --color-info-fg: #002480;
+  --color-info-bg: #DFDFE6;
+  --color-info-fg: #000066;
 
   /* Sidebar */
-  --sidebar: #FFFFFF;
-  --sidebar-foreground: #64687A;
+  --sidebar: #E7E8E5;
+  --sidebar-foreground: #666666;
   --sidebar-primary: #18181b;
   --sidebar-primary-foreground: #fafafa;
-  --sidebar-accent: #F0F2F5;
+  --sidebar-accent: #CBCCC9;
   --sidebar-accent-foreground: #18181b;
-  --sidebar-border: #C9CCD4;
+  --sidebar-border: #CBCCC9;
   --sidebar-ring: #71717a;
 
   /* Radius base */
   --radius: 1rem; /* 16px = --radius-m from .pen */
 
   /* Charts */
-  --chart-1: #0053EA;
-  --chart-2: #E5E8ED;
-  --chart-3: #C9CCD4;
-  --chart-4: #64687A;
+  --chart-1: #FF8400;
+  --chart-2: #E7E8E5;
+  --chart-3: #CBCCC9;
+  --chart-4: #666666;
   --chart-5: #111111;
 }
 
@@ -159,14 +159,14 @@
   --popover-foreground: #FFFFFF;
 
   /* Brand */
-  --primary: #0053EA;
-  --primary-foreground: #FFFFFF;
-  --secondary: #1E2230;
+  --primary: #FF8400;
+  --primary-foreground: #111111;
+  --secondary: #2E2E2E;
   --secondary-foreground: #FFFFFF;
 
   /* Muted */
-  --muted: #1E2230;
-  --muted-foreground: #B6B9C4;
+  --muted: #2E2E2E;
+  --muted-foreground: #B8B9B6;
 
   /* Accent */
   --accent: #111111;
@@ -177,9 +177,9 @@
   --destructive-foreground: #FFFFFF;
 
   /* Border / Input / Ring */
-  --border: #1E2230;
-  --input: #1E2230;
-  --ring: #64687A;
+  --border: #2E2E2E;
+  --input: #2E2E2E;
+  --ring: #666666;
 
   /* Semantic: Success */
   --color-success-bg: #222924;
@@ -187,20 +187,20 @@
 
   /* Semantic: Warning */
   --color-warning-bg: #291C0F;
-  --color-warning-fg: #FFA033;
+  --color-warning-fg: #FF8400;
 
   /* Semantic: Error */
   --color-error-bg: #24100B;
   --color-error-fg: #FF5C33;
 
   /* Semantic: Info */
-  --color-info-bg: #0F1529;
-  --color-info-fg: #6B9AFF;
+  --color-info-bg: #222229;
+  --color-info-fg: #B2B2FF;
 
   /* Sidebar */
-  --sidebar: #1A1A1A;
+  --sidebar: #18181b;
   --sidebar-foreground: #fafafa;
-  --sidebar-primary: #1A1A1A;
+  --sidebar-primary: #18181b;
   --sidebar-primary-foreground: #fafafa;
   --sidebar-accent: #2a2a30;
   --sidebar-accent-foreground: #fafafa;
@@ -208,10 +208,10 @@
   --sidebar-ring: #71717a;
 
   /* Charts */
-  --chart-1: #0053EA;
-  --chart-2: #1E2230;
-  --chart-3: #64687A;
-  --chart-4: #B6B9C4;
+  --chart-1: #FF8400;
+  --chart-2: #2E2E2E;
+  --chart-3: #666666;
+  --chart-4: #B8B9B6;
   --chart-5: #FFFFFF;
 }
 

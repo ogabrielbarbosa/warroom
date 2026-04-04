@@ -273,10 +273,10 @@ function SuggestionMiniCard({
   return (
     <button
       onClick={onClick}
-      className="flex w-[260px] shrink-0 flex-col gap-2 rounded-xl border border-[#2E2E2E] bg-[#111] p-4 text-left transition-colors hover:border-[#0053EA]/50 hover:bg-[#1A1A1A]"
+      className="flex w-[260px] shrink-0 flex-col gap-2 rounded-xl border border-[#2E2E2E] bg-[#111] p-4 text-left transition-colors hover:border-[#FF8400]/50 hover:bg-[#1A1A1A]"
     >
       <div className="flex items-center gap-2">
-        <span className="flex size-6 items-center justify-center rounded-full bg-[#0053EA] font-mono text-[10px] font-bold text-white">
+        <span className="flex size-6 items-center justify-center rounded-full bg-[#FF8400] font-mono text-[10px] font-bold text-[#111111]">
           {idea.idea_number}
         </span>
         <span className="rounded-full bg-[#2E2E2E] px-2 py-0.5 font-mono text-[10px] text-white">
@@ -321,7 +321,7 @@ function IdeaSuggestionModal({
       {/* Header */}
       <div className="flex items-center justify-between border-b border-border px-6 py-5">
         <div className="flex items-center gap-3">
-          <span className="flex size-7 items-center justify-center rounded-full bg-[#0053EA] font-mono text-xs font-bold text-white">
+          <span className="flex size-7 items-center justify-center rounded-full bg-[#FF8400] font-mono text-xs font-bold text-[#111111]">
             {idea.idea_number}
           </span>
           <span className="rounded-full bg-[#2E2E2E] px-2.5 py-1 font-mono text-xs text-white">
@@ -397,15 +397,15 @@ function IdeaSuggestionModal({
             </div>
             <div className="flex flex-col gap-2 rounded-xl bg-[#111] p-4">
               <p className="text-sm leading-[1.7] text-white">
-                <span className="font-mono text-xs text-[#0053EA]">1.</span>{" "}
+                <span className="font-mono text-xs text-[#FF8400]">1.</span>{" "}
                 {idea.script.beat_1}
               </p>
               <p className="text-sm leading-[1.7] text-white">
-                <span className="font-mono text-xs text-[#0053EA]">2.</span>{" "}
+                <span className="font-mono text-xs text-[#FF8400]">2.</span>{" "}
                 {idea.script.beat_2}
               </p>
               <p className="text-sm leading-[1.7] text-white">
-                <span className="font-mono text-xs text-[#0053EA]">3.</span>{" "}
+                <span className="font-mono text-xs text-[#FF8400]">3.</span>{" "}
                 {idea.script.beat_3}
               </p>
             </div>
@@ -475,15 +475,15 @@ function IdeaSuggestionModal({
             </div>
             <div className="flex flex-col gap-1.5 rounded-xl bg-[#111] p-3">
               <p className="text-[13px] leading-[1.5] text-[#B8B9B6]">
-                <span className="font-mono text-[10px] text-[#0053EA]">1.</span>{" "}
+                <span className="font-mono text-[10px] text-[#FF8400]">1.</span>{" "}
                 {metadata.original_arc.beat_1}
               </p>
               <p className="text-[13px] leading-[1.5] text-[#B8B9B6]">
-                <span className="font-mono text-[10px] text-[#0053EA]">2.</span>{" "}
+                <span className="font-mono text-[10px] text-[#FF8400]">2.</span>{" "}
                 {metadata.original_arc.beat_2}
               </p>
               <p className="text-[13px] leading-[1.5] text-[#B8B9B6]">
-                <span className="font-mono text-[10px] text-[#0053EA]">3.</span>{" "}
+                <span className="font-mono text-[10px] text-[#FF8400]">3.</span>{" "}
                 {metadata.original_arc.beat_3}
               </p>
             </div>
@@ -551,7 +551,7 @@ export function IdeaDetailContent({ idea }: { idea: ContentIdea }) {
                 <StatCard
                   label="Outlier Score"
                   value={String(idea.outlierScore)}
-                  valueColor="#0053EA"
+                  valueColor="#FF8400"
                 />
               </div>
             </section>
@@ -687,7 +687,7 @@ export function IdeaDetailContent({ idea }: { idea: ContentIdea }) {
                 href={idea.videoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex w-fit items-center gap-2 rounded-full bg-[#1E2230] px-3 py-2 text-[13px] font-medium text-[#0053EA] transition-colors hover:bg-[#2A3040]"
+                className="inline-flex w-fit items-center gap-2 rounded-full bg-[#291C0F] px-3 py-2 text-[13px] font-medium text-[#FF8400] transition-colors hover:bg-[#3D2A15]"
               >
                 <ExternalLink className="size-4" />
                 Open on {idea.platform}
