@@ -13,7 +13,6 @@
       "clip": true,
       "width": 3000,
       "height": 4400,
-      "fill": "$--background",
       "layout": "none",
       "children": [
         {
@@ -7708,7 +7707,7 @@
               "width": "fit_content",
               "height": "fit_content",
               "x": 32,
-              "y": 31.22267869582081
+              "y": 31.222678695820814
             },
             "MIpaj": {
               "x": 40,
@@ -9500,7 +9499,7 @@
               "width": "fit_content",
               "height": "fit_content",
               "x": 32,
-              "y": 31.22267869582081
+              "y": 31.222678695820814
             },
             "MIpaj": {
               "x": 40,
@@ -12665,7 +12664,7 @@
               "height": "fit_content",
               "width": "fit_content",
               "x": 32,
-              "y": 31.22267869582081
+              "y": 31.222678695820814
             },
             "MIpaj": {
               "x": 40,
@@ -15461,7 +15460,7 @@
               "height": "fit_content",
               "width": "fit_content",
               "x": 32,
-              "y": 31.22267869582081
+              "y": 31.222678695820814
             },
             "MIpaj": {
               "x": 40,
@@ -17609,7 +17608,7 @@
               "height": "fit_content",
               "width": "fit_content",
               "x": 32,
-              "y": 31.22267869582081
+              "y": 31.222678695820814
             },
             "MIpaj": {
               "x": 40,
@@ -18735,7 +18734,7 @@
                             {
                               "type": "text",
                               "id": "6aL0k",
-                              "fill": "#6B8AFF",
+                              "fill": "#FF8400",
                               "content": "SCRIPTED",
                               "fontFamily": "$--font-primary",
                               "fontSize": 13,
@@ -19399,7 +19398,7 @@
                             {
                               "type": "text",
                               "id": "mHvBv",
-                              "fill": "#B07CFF",
+                              "fill": "#FF8400",
                               "content": "EDITING",
                               "fontFamily": "$--font-primary",
                               "fontSize": 13,
@@ -20234,7 +20233,7 @@
                   "type": "frame",
                   "id": "oHqjC",
                   "name": "Status Badge",
-                  "fill": "#1a2744",
+                  "fill": "#291C0F",
                   "cornerRadius": 999,
                   "padding": [
                     4,
@@ -20245,7 +20244,7 @@
                       "type": "text",
                       "id": "ZVGn1",
                       "name": "statusText",
-                      "fill": "#6B8AFF",
+                      "fill": "#FF8400",
                       "content": "Scripted",
                       "fontFamily": "$--font-primary",
                       "fontSize": 12,
@@ -21036,7 +21035,7 @@
               "width": "fit_content",
               "height": "fit_content",
               "x": 32,
-              "y": 31.22267869582081
+              "y": 31.222678695820814
             },
             "MIpaj": {
               "x": 40,
@@ -25813,7 +25812,7 @@
               "width": "fit_content",
               "height": "fit_content",
               "x": 32,
-              "y": 31.22267869582081
+              "y": 31.222678695820814
             },
             "MIpaj": {
               "x": 40,

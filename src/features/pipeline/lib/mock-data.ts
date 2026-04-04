@@ -5,8 +5,11 @@
 export type PipelineStatus =
   | "Idea"
   | "Scripted"
+  | "Prep Materials"
   | "Filming"
   | "Editing"
+  | "Prep for Post"
+  | "Scheduled"
   | "Posted";
 
 export interface PipelineCard {
@@ -23,6 +26,7 @@ export interface PipelineCard {
   onScreenText: string;
   recordingInstructions: string;
   script: string;
+  scheduleDate: string | null;
   referenceVideo: {
     hook: string;
     creator: string;
@@ -33,16 +37,22 @@ export interface PipelineCard {
 export const STATUS_COLORS: Record<PipelineStatus, string> = {
   Idea: "#B8B9B6",
   Scripted: "#6B8AFF",
+  "Prep Materials": "#FF6B9D",
   Filming: "#FF8400",
   Editing: "#B07CFF",
+  "Prep for Post": "#FFD93D",
+  Scheduled: "#00D4AA",
   Posted: "#4ADE80",
 };
 
 export const STATUS_BG: Record<PipelineStatus, string> = {
   Idea: "bg-[#2E2E2E]",
   Scripted: "bg-[#1a2744]",
+  "Prep Materials": "bg-[#2E1A24]",
   Filming: "bg-[#291C0F]",
   Editing: "bg-[#2A1A2E]",
+  "Prep for Post": "bg-[#2E2A14]",
+  Scheduled: "bg-[#0F2E26]",
   Posted: "bg-[#122E1A]",
 };
 
@@ -64,6 +74,7 @@ export const MOCK_PIPELINE_CARDS: PipelineCard[] = [
     onScreenText: "",
     recordingInstructions: "",
     script: "",
+    scheduleDate: null,
     referenceVideo: null,
   },
   {
@@ -82,6 +93,7 @@ export const MOCK_PIPELINE_CARDS: PipelineCard[] = [
     onScreenText: "",
     recordingInstructions: "",
     script: "",
+    scheduleDate: null,
     referenceVideo: null,
   },
   {
@@ -100,6 +112,7 @@ export const MOCK_PIPELINE_CARDS: PipelineCard[] = [
     onScreenText: "",
     recordingInstructions: "",
     script: "",
+    scheduleDate: null,
     referenceVideo: null,
   },
   // ── Scripted ──
@@ -122,6 +135,7 @@ export const MOCK_PIPELINE_CARDS: PipelineCard[] = [
       "Record terminal on left, face cam on right. Show each command with a real use case. Keep energy high, 3-5 seconds per command demo.",
     script:
       'HOOK: "You\'re mass slower in the terminal because nobody taught you these 10 commands."\n\nOPEN: Show slow grep search, then ripgrep instant result.\n\n1. ripgrep — "grep but mass faster. rg \'pattern\' and it searches everything, respects gitignore."\n\n2. fd — "find but actually usable. fd \'query\' and you\'re done."\n\n3. zoxide — "cd but it learns. z project-name from anywhere."\n\n4. fzf — "fuzzy find everything. Pipe anything into it."\n\n5. bat — "cat but with syntax highlighting and line numbers."\n\nCLOSE: "Save this, try one today. Which command are you installing first?"',
+    scheduleDate: null,
     referenceVideo: {
       hook: '"These mass changed my terminal workflow..."',
       creator: "@techcreator",
@@ -146,6 +160,7 @@ export const MOCK_PIPELINE_CARDS: PipelineCard[] = [
       "Split screen: code editor left, terminal right. Build incrementally, show each feature working.",
     script:
       'HOOK: "Stop building CLIs the wrong way."\n\nOPEN: Show a messy bash script, then the polished Go CLI replacement.\n\n1. cobra init — scaffold the project\n2. Add subcommands\n3. Flags and config\n4. Interactive prompts with bubbletea\n\nCLOSE: "Ship it with goreleaser. Link in bio."',
+    scheduleDate: null,
     referenceVideo: null,
   },
   // ── Filming ──
@@ -167,6 +182,7 @@ export const MOCK_PIPELINE_CARDS: PipelineCard[] = [
       "Full screen terminal. Start with empty init.lua. Add plugins one by one, showing the result after each.",
     script:
       'HOOK: "I mass deleted my config and started from scratch."\n\nStep through each plugin addition with live demos.',
+    scheduleDate: null,
     referenceVideo: null,
   },
   {
@@ -187,6 +203,7 @@ export const MOCK_PIPELINE_CARDS: PipelineCard[] = [
       "Talking head with screen share cutaways. Show docker-compose.yml evolving step by step.",
     script:
       'HOOK: "Nobody explains this part of Docker Compose."\n\nCover networking, volumes, depends_on vs healthcheck, multi-stage.',
+    scheduleDate: null,
     referenceVideo: null,
   },
   // ── Editing ──
@@ -206,6 +223,7 @@ export const MOCK_PIPELINE_CARDS: PipelineCard[] = [
     recordingInstructions: "",
     script:
       'HOOK: "Why is nobody talking about git worktrees?"\n\nShow the pain of branch switching, then the worktree workflow.',
+    scheduleDate: null,
     referenceVideo: null,
   },
   {
@@ -225,6 +243,7 @@ export const MOCK_PIPELINE_CARDS: PipelineCard[] = [
     recordingInstructions: "",
     script:
       'HOOK: "I mass deleted VS Code and switched to Zed."\n\nCompare startup time, extensions, AI features, collaboration.',
+    scheduleDate: null,
     referenceVideo: null,
   },
   {
@@ -244,6 +263,7 @@ export const MOCK_PIPELINE_CARDS: PipelineCard[] = [
     recordingInstructions: "",
     script:
       'HOOK: "Apple doesn\'t want you to know this."\n\nShow UTM setup, then Asahi installation, then benchmark results.',
+    scheduleDate: null,
     referenceVideo: null,
   },
   // ── Posted ──
@@ -264,6 +284,7 @@ export const MOCK_PIPELINE_CARDS: PipelineCard[] = [
     recordingInstructions: "",
     script:
       'HOOK: "Here\'s everything on my desk and why."\n\nTour each item with reasoning behind the choice.',
+    scheduleDate: null,
     referenceVideo: null,
   },
   {
@@ -283,6 +304,7 @@ export const MOCK_PIPELINE_CARDS: PipelineCard[] = [
     recordingInstructions: "",
     script:
       'HOOK: "I tried the new Claude Code and it changed everything."\n\nLive demo on a real codebase.',
+    scheduleDate: null,
     referenceVideo: null,
   },
 ];

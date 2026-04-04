@@ -9,8 +9,11 @@ import { PipelineContent } from "./pipeline-content";
 const STATUS_MAP: Record<string, PipelineStatus> = {
   idea: "Idea",
   scripted: "Scripted",
+  prep_materials: "Prep Materials",
   filming: "Filming",
   editing: "Editing",
+  prep_for_post: "Prep for Post",
+  scheduled: "Scheduled",
   posted: "Posted",
 };
 
@@ -35,6 +38,7 @@ function rowToCard(row: Record<string, unknown>): PipelineCard {
     onScreenText: (row.on_screen_text as string) ?? "",
     recordingInstructions: (row.recording_instructions as string) ?? "",
     script: (row.script as string) ?? "",
+    scheduleDate: (row.schedule_date as string) ?? null,
     referenceVideo: null,
   };
 }
@@ -63,7 +67,10 @@ export function PipelineRealtime({
         { event: "INSERT", schema: "public", table: "content_pipeline" },
         (payload) => {
           const newCard = rowToCard(payload.new);
-          setCards((prev) => [newCard, ...prev]);
+          setCards((prev) => {
+            if (prev.some((c) => c.id === newCard.id)) return prev;
+            return [newCard, ...prev];
+          });
         }
       )
       .on(

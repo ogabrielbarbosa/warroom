@@ -6,8 +6,11 @@ import { revalidatePath } from "next/cache";
 const STATUS_MAP: Record<string, string> = {
   Idea: "idea",
   Scripted: "scripted",
+  "Prep Materials": "prep_materials",
   Filming: "filming",
   Editing: "editing",
+  "Prep for Post": "prep_for_post",
+  Scheduled: "scheduled",
   Posted: "posted",
 };
 
@@ -37,6 +40,49 @@ export async function createPipelineCard(formData: FormData) {
     content_angle: content_angle || null,
     script: script || null,
   });
+
+  if (error) throw new Error(error.message);
+  revalidatePath("/pipeline");
+}
+
+export async function createPipelineCardFromData(data: {
+  title: string;
+  topic?: string;
+  hook?: string;
+  status: string;
+  format?: string;
+  contentAngle?: string;
+  script?: string;
+  material?: string;
+  onScreenText?: string;
+  recordingInstructions?: string;
+}) {
+  const supabase = await createClient();
+
+  const { error } = await supabase.from("content_pipeline").insert({
+    title: data.title || "Untitled",
+    topic: data.topic || null,
+    hook: data.hook || null,
+    status: STATUS_MAP[data.status] ?? "idea",
+    visual_format: FORMAT_MAP[data.format ?? ""] ?? null,
+    content_angle: data.contentAngle || null,
+    script: data.script || null,
+    material_research: data.material || null,
+    on_screen_text: data.onScreenText || null,
+    recording_instructions: data.recordingInstructions || null,
+  });
+
+  if (error) throw new Error(error.message);
+  revalidatePath("/pipeline");
+}
+
+export async function updateCardScheduleDate(id: string, scheduleDate: string | null) {
+  const supabase = await createClient();
+
+  const { error } = await supabase
+    .from("content_pipeline")
+    .update({ schedule_date: scheduleDate })
+    .eq("id", id);
 
   if (error) throw new Error(error.message);
   revalidatePath("/pipeline");
@@ -73,6 +119,7 @@ export async function updatePipelineCard(
   if ("recordingInstructions" in data)
     updates.recording_instructions = data.recordingInstructions;
   if ("postCaption" in data) updates.post_caption = data.postCaption;
+  if ("scheduleDate" in data) updates.schedule_date = data.scheduleDate;
 
   const { error } = await supabase
     .from("content_pipeline")

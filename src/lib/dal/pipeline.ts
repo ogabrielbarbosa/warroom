@@ -7,8 +7,11 @@ import type { PipelineCard, PipelineStatus } from "@/features/pipeline/lib/mock-
 const STATUS_MAP: Record<string, PipelineStatus> = {
   idea: "Idea",
   scripted: "Scripted",
+  prep_materials: "Prep Materials",
   filming: "Filming",
   editing: "Editing",
+  prep_for_post: "Prep for Post",
+  scheduled: "Scheduled",
   posted: "Posted",
 };
 
@@ -45,6 +48,7 @@ export async function getPipelineCards(): Promise<PipelineCard[]> {
       onScreenText: row.on_screen_text ?? "",
       recordingInstructions: row.recording_instructions ?? "",
       script: row.script ?? "",
+      scheduleDate: row.schedule_date ?? null,
       referenceVideo: ref
         ? {
             hook: ref.spoken_hook ?? "",

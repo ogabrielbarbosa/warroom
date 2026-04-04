@@ -260,7 +260,7 @@ function IdeaCard({ idea }: { idea: ContentIdea }) {
 
       {/* Card Actions */}
       <div className="flex items-center justify-between border-t border-[#2E2E2E] px-4 py-3">
-        <span className="text-[13px] text-[#B8B9B6]">{idea.views} 👁</span>
+        <span className="text-[13px] text-[#B8B9B6]">{idea.views}</span>
         <span className="rounded-full border border-[#2E2E2E] px-4 py-2.5 font-mono text-sm font-medium text-white transition-colors group-hover:bg-muted/50">
           View
         </span>
