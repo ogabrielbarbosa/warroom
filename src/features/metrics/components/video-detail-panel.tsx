@@ -1,11 +1,14 @@
 "use client";
 
+import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { X } from "lucide-react";
-import type { ContentVideo } from "../lib/mock-data";
+import type { ContentVideo, ContentSnapshot } from "../lib/mock-data";
+import { VideoPerformanceChart } from "./charts";
 
 interface VideoDetailPanelProps {
   video: ContentVideo | null;
+  contentSnapshots: ContentSnapshot[];
   onClose: () => void;
 }
 
@@ -41,7 +44,12 @@ function DetailField({ label, value }: { label: string; value: string }) {
   );
 }
 
-export function VideoDetailPanel({ video, onClose }: VideoDetailPanelProps) {
+export function VideoDetailPanel({ video, contentSnapshots, onClose }: VideoDetailPanelProps) {
+  const videoSnapshots = useMemo(
+    () => (video ? contentSnapshots.filter((s) => s.contentId === video.id) : []),
+    [video, contentSnapshots]
+  );
+
   return (
     <>
       {/* Backdrop */}
@@ -88,17 +96,8 @@ export function VideoDetailPanel({ video, onClose }: VideoDetailPanelProps) {
               {/* Performance Over Time */}
               <div className="flex flex-col gap-4 p-6">
                 <SectionLabel>Performance Over Time</SectionLabel>
-                <div className="flex h-[180px] items-center justify-center rounded-lg border border-dashed border-border">
-                  <span className="text-xs text-muted-foreground">
-                    Chart placeholder
-                  </span>
-                </div>
-                <div className="flex justify-between text-[11px] text-muted-foreground">
-                  <span>Mar 1</span>
-                  <span>Mar 8</span>
-                  <span>Mar 15</span>
-                  <span>Mar 22</span>
-                  <span>Mar 29</span>
+                <div className="h-[180px] w-full">
+                  <VideoPerformanceChart snapshots={videoSnapshots} />
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-1.5">

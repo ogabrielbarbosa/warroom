@@ -167,7 +167,7 @@ export function AccountDetailPanel({
                   <div className="flex gap-4">
                     <StatCard
                       label="Engagement Rate"
-                      value={`${account.engagement}%`}
+                      value={account.engagementRateFormatted}
                       valueClassName="text-primary"
                     />
                     <StatCard

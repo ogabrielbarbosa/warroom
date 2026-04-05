@@ -1,13 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   ExternalLink,
+  Loader2,
   Play,
   Copy,
   Check,
@@ -16,6 +18,41 @@ import {
 } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
 import { type ContentIdea, type IdeaSuggestion } from "../lib/mock-data";
+
+/* ── Scroll Fade ───────────────────────────────────────── */
+
+function ScrollFade({ children }: { children: React.ReactNode }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [showLeft, setShowLeft] = useState(false);
+  const [showRight, setShowRight] = useState(true);
+
+  const updateFade = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setShowLeft(el.scrollLeft > 0);
+    setShowRight(el.scrollLeft < el.scrollWidth - el.clientWidth);
+  }, []);
+
+  const mask = [
+    showLeft ? "transparent, black 24px" : "black, black",
+    "black calc(100% - 24px)",
+    showRight ? "transparent" : "black",
+  ].join(", ");
+
+  const maskImage = `linear-gradient(to right, ${mask})`;
+
+  return (
+    <div style={{ maskImage, WebkitMaskImage: maskImage }}>
+      <div
+        ref={scrollRef}
+        onScroll={updateFade}
+        className="flex gap-3 overflow-x-auto pb-1"
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
 
 /* ── Section Label ──────────────────────────────────────── */
 
@@ -505,11 +542,29 @@ function IdeaSuggestionModal({
 /* ── Main Detail Content ────────────────────────────────── */
 
 export function IdeaDetailContent({ idea }: { idea: ContentIdea }) {
+  const router = useRouter();
   const [showTranscript, setShowTranscript] = useState(false);
   const [suggestionIndex, setSuggestionIndex] = useState<number | null>(null);
+  const [generating, setGenerating] = useState(false);
 
   const hasMetadata =
     idea.metadata && idea.metadata.ideas && idea.metadata.ideas.length > 0;
+
+  async function handleGenerateIdeas() {
+    setGenerating(true);
+    try {
+      await fetch("https://n8n.sharken.com.br/webhook/generate-ideas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content_id: idea.id }),
+      });
+      router.refresh();
+    } catch {
+      // silently fail
+    } finally {
+      setGenerating(false);
+    }
+  }
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
@@ -680,6 +735,14 @@ export function IdeaDetailContent({ idea }: { idea: ContentIdea }) {
         {/* Right Column — Video Preview & Quick Info */}
         <div className="w-full shrink-0 border-t border-[#2E2E2E] bg-[#1A1A1A] lg:w-[420px] lg:border-l lg:border-t-0 lg:overflow-y-auto">
           <div className="flex flex-col gap-6 p-4 md:p-6">
+            {/* Video Preview */}
+            <section className="flex flex-col gap-3">
+              <SectionLabel>Video Preview</SectionLabel>
+              <VideoPreview url={idea.videoUrl} duration={idea.duration} />
+            </section>
+
+            <Divider />
+
             {/* Original Video */}
             <section className="flex flex-col gap-3">
               <SectionLabel>Original Video</SectionLabel>
@@ -704,34 +767,47 @@ export function IdeaDetailContent({ idea }: { idea: ContentIdea }) {
               </p>
             </section>
 
-            <Divider />
-
-            {/* Video Preview */}
-            <section className="flex flex-col gap-3">
-              <SectionLabel>Video Preview</SectionLabel>
-              <VideoPreview url={idea.videoUrl} duration={idea.duration} />
-            </section>
-
-            <Divider />
-
             {/* AI Suggestions */}
-            {hasMetadata && (
-              <>
-                <section className="flex flex-col gap-3">
-                  <div className="flex items-center gap-2">
-                    <SectionLabel>Sugestões de Conteúdo</SectionLabel>
-                  </div>
-                  <div className="flex gap-3 overflow-x-auto pb-1">
-                    {idea.metadata!.ideas.map((s, i) => (
-                      <SuggestionMiniCard
-                        key={s.idea_number}
-                        idea={s}
-                        onClick={() => setSuggestionIndex(i)}
-                      />
-                    ))}
-                  </div>
-                </section>
-              </>
+            <Divider />
+
+            {hasMetadata ? (
+              <section className="flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <SectionLabel>Sugestões de Conteúdo</SectionLabel>
+                </div>
+                <ScrollFade>
+                  {idea.metadata!.ideas.map((s, i) => (
+                    <SuggestionMiniCard
+                      key={s.idea_number}
+                      idea={s}
+                      onClick={() => setSuggestionIndex(i)}
+                    />
+                  ))}
+                </ScrollFade>
+              </section>
+            ) : (
+              <section className="flex flex-col gap-3">
+                <div className="flex items-center gap-2">
+                  <SectionLabel>Sugestões de Conteúdo</SectionLabel>
+                </div>
+                <button
+                  onClick={handleGenerateIdeas}
+                  disabled={generating}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-[#2E2E2E] bg-[#111] px-4 py-6 text-sm font-medium text-[#B8B9B6] transition-colors hover:border-[#FF8400]/50 hover:bg-[#1A1A1A] hover:text-white disabled:pointer-events-none disabled:opacity-60"
+                >
+                  {generating ? (
+                    <>
+                      <Loader2 className="size-4 animate-spin text-[#FF8400]" />
+                      Gerando ideias…
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="size-4 text-[#FF8400]" />
+                      Gerar ideias de vídeo
+                    </>
+                  )}
+                </button>
+              </section>
             )}
           </div>
         </div>

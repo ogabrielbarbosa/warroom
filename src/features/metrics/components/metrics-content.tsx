@@ -21,6 +21,12 @@ import type {
   ContentSnapshot,
 } from "../lib/mock-data";
 import { VideoDetailPanel } from "./video-detail-panel";
+import {
+  ViewsOverTimeChart,
+  FollowersOverTimeChart,
+  EngagementBreakdownChart,
+  AvgViewsPerPostChart,
+} from "./charts";
 
 /* ── Types ──────────────────────────────────────────────── */
 
@@ -46,13 +52,6 @@ const DAYS_MAP: Record<string, number> = {
   "30d": 30,
   "90d": 90,
 };
-
-const CHART_CARDS = [
-  { title: "Views Over Time" },
-  { title: "Followers Over Time" },
-  { title: "Engagement Breakdown" },
-  { title: "Avg Views Per Post" },
-];
 
 /* ── Helpers ───────────────────────────────────────────── */
 
@@ -157,17 +156,19 @@ function KpiStatCard({ label, value, change, trend }: KpiCard) {
   );
 }
 
-/* ── Chart Placeholder ────────────────────���─────────────── */
+/* ── Chart Card ───────────────────────────────────────── */
 
-function ChartCard({ title }: { title: string }) {
+function ChartCard({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
-    <Card className="rounded-xl flex flex-col gap-4 p-5 min-h-[280px]">
+    <Card className="rounded-xl flex flex-col gap-4 p-5">
       <h3 className="text-sm font-semibold text-foreground">{title}</h3>
-      <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed border-border">
-        <span className="text-xs text-muted-foreground">
-          Chart placeholder
-        </span>
-      </div>
+      <div className="h-[220px] w-full">{children}</div>
     </Card>
   );
 }
@@ -215,6 +216,7 @@ function OutlierBadge({
 export function MetricsContent({
   videos,
   accountStats,
+  contentSnapshots,
 }: {
   videos: ContentVideo[];
   accountStats: AccountStat[];
@@ -273,16 +275,22 @@ export function MetricsContent({
 
             {/* Charts Row 1 */}
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
-              {CHART_CARDS.slice(0, 2).map((chart) => (
-                <ChartCard key={chart.title} title={chart.title} />
-              ))}
+              <ChartCard title="Views Over Time">
+                <ViewsOverTimeChart snapshots={contentSnapshots} />
+              </ChartCard>
+              <ChartCard title="Followers Over Time">
+                <FollowersOverTimeChart accountStats={accountStats} />
+              </ChartCard>
             </div>
 
             {/* Charts Row 2 */}
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
-              {CHART_CARDS.slice(2).map((chart) => (
-                <ChartCard key={chart.title} title={chart.title} />
-              ))}
+              <ChartCard title="Engagement Breakdown">
+                <EngagementBreakdownChart videos={filteredVideos} />
+              </ChartCard>
+              <ChartCard title="Avg Views Per Post">
+                <AvgViewsPerPostChart accountStats={accountStats} />
+              </ChartCard>
             </div>
           </div>
         )}
@@ -366,6 +374,7 @@ export function MetricsContent({
       {/* Slide Over Panel */}
       <VideoDetailPanel
         video={selectedVideo}
+        contentSnapshots={contentSnapshots}
         onClose={() => setSelectedVideo(null)}
       />
     </div>

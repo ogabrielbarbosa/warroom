@@ -226,6 +226,13 @@ export function AccountsContent({ accounts }: { accounts: Account[] }) {
       );
     }
 
+    // Keep pinned accounts (ogabarbosa) first
+    result.sort((a, b) => {
+      if (a.isPinned && !b.isPinned) return -1;
+      if (!a.isPinned && b.isPinned) return 1;
+      return 0;
+    });
+
     return result;
   }, [accounts, platformFilter, statusFilter, nicheFilter, search]);
 
@@ -276,7 +283,7 @@ export function AccountsContent({ accounts }: { accounts: Account[] }) {
               <TableHead className="w-auto">Account</TableHead>
               <TableHead className="w-[130px]">Platform</TableHead>
               <TableHead className="w-[110px]">Followers</TableHead>
-              <TableHead className="w-[120px]">Engagement</TableHead>
+              <TableHead className="w-[120px]">Avg Views</TableHead>
               <TableHead className="w-[130px]">Status</TableHead>
               <TableHead className="w-[140px]">Last Sync</TableHead>
             </TableRow>
@@ -319,9 +326,9 @@ export function AccountsContent({ accounts }: { accounts: Account[] }) {
                     {account.followersFormatted}
                   </TableCell>
 
-                  {/* Engagement Cell */}
+                  {/* Avg Views Cell */}
                   <TableCell className="h-auto py-3 text-sm text-foreground">
-                    {account.engagement}%
+                    {account.avgViewsFormatted}
                   </TableCell>
 
                   {/* Status Cell */}
