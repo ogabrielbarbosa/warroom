@@ -64,6 +64,20 @@ export function AccountDetailPanel({
   const platformStyle = account ? PLATFORM_STYLES[account.platform] : null;
   const statusStyle = account ? STATUS_STYLES[account.status] : null;
 
+  function getProfileUrl(account: Account): string {
+    const handle = account.username.replace(/^@/, "");
+    switch (account.platform) {
+      case "Instagram":
+        return `https://instagram.com/${handle}`;
+      case "YouTube":
+        return `https://youtube.com/@${handle}`;
+      case "TikTok":
+        return `https://tiktok.com/@${handle}`;
+      default:
+        return account.profileUrl;
+    }
+  }
+
   return (
     <>
       {/* Backdrop */}
@@ -204,7 +218,7 @@ export function AccountDetailPanel({
                 <section className="flex flex-col gap-3">
                   <SectionLabel>Profile Link</SectionLabel>
                   <a
-                    href={account.profileUrl}
+                    href={getProfileUrl(account)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex w-fit items-center gap-2 rounded-full bg-[#2E2E2E] px-3 py-2 text-sm font-medium text-primary transition-colors hover:bg-[#3a3a3a]"

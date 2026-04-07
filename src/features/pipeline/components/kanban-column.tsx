@@ -22,7 +22,7 @@ export function KanbanColumn({ status, cards, onCardClick, onAddCard }: KanbanCo
 
   return (
     <div
-      className={`flex h-full w-[260px] shrink-0 flex-col rounded-xl border border-border bg-card transition-colors ${
+      className={`flex h-full w-[400px] shrink-0 flex-col rounded-xl border border-border bg-card transition-colors ${
         isOver ? "border-primary/50 bg-primary/5" : ""
       }`}
     >

@@ -77,7 +77,7 @@ export function KanbanCard({ card, onClick }: KanbanCardProps) {
 
 export function KanbanCardOverlay({ card }: { card: PipelineCard }) {
   return (
-    <div className="flex w-[236px] flex-col gap-2 rounded-lg border border-primary/50 bg-background p-3 text-left shadow-2xl rotate-[2deg]">
+    <div className="flex w-[384px] flex-col gap-2 rounded-lg border border-primary/50 bg-background p-3 text-left shadow-2xl rotate-[2deg]">
       <span className="font-mono text-sm font-semibold text-foreground leading-snug">
         {card.title}
       </span>
