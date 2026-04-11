@@ -66,9 +66,41 @@ function filterByTimeRange(
   return videos.filter((v) => v.rawDate && new Date(v.rawDate) >= cutoff);
 }
 
+function filterPrevPeriod(
+  videos: ContentVideo[],
+  range: TimeRange
+): ContentVideo[] {
+  const days = DAYS_MAP[range];
+  if (!days) return [];
+  const now = Date.now();
+  const currentCutoff = new Date(now - days * 86_400_000);
+  const prevCutoff = new Date(now - days * 2 * 86_400_000);
+  return videos.filter((v) => {
+    if (!v.rawDate) return false;
+    const d = new Date(v.rawDate);
+    return d >= prevCutoff && d < currentCutoff;
+  });
+}
+
+function pctChange(current: number, previous: number): { change: string; trend: "up" | "down" | "neutral" } {
+  if (previous === 0) {
+    if (current === 0) return { change: "—", trend: "neutral" };
+    return { change: "+100%", trend: "up" };
+  }
+  const pct = ((current - previous) / previous) * 100;
+  if (pct === 0) return { change: "0%", trend: "neutral" };
+  const sign = pct > 0 ? "+" : "";
+  return {
+    change: `${sign}${pct.toFixed(1)}%`,
+    trend: pct > 0 ? "up" : "down",
+  };
+}
+
 function computeKpis(
   filtered: ContentVideo[],
-  accountStats: AccountStat[]
+  prev: ContentVideo[],
+  accountStats: AccountStat[],
+  range: TimeRange
 ): { row1: KpiCard[]; row2: KpiCard[] } {
   const totalViews = filtered.reduce((s, v) => s + v.views, 0);
   const totalLikes = filtered.reduce((s, v) => s + v.likes, 0);
@@ -80,18 +112,49 @@ function computeKpis(
     : 0;
   const latestFollowers = accountStats.at(-1)?.followerCount ?? 0;
 
+  const hasPrev = range !== "All Time" && range !== "Custom";
+
+  const prevViews = prev.reduce((s, v) => s + v.views, 0);
+  const prevLikes = prev.reduce((s, v) => s + v.likes, 0);
+  const prevComments = prev.reduce((s, v) => s + v.comments, 0);
+  const prevShares = prev.reduce((s, v) => s + v.shares, 0);
+  const prevSaves = prev.reduce((s, v) => s + v.saves, 0);
+  const prevAvgWatch = prev.length
+    ? prev.reduce((s, v) => s + v.avgWatchTimeSeconds, 0) / prev.length
+    : 0;
+
+  // Followers: compare with account_stats from the start of the period
+  const days = DAYS_MAP[range];
+  let followerChange: { change: string; trend: "up" | "down" | "neutral" } = { change: "—", trend: "neutral" };
+  if (hasPrev && days && accountStats.length > 0) {
+    const cutoffDate = new Date(Date.now() - days * 86_400_000);
+    const prevStat = accountStats.reduce((closest, stat) => {
+      const d = new Date(stat.snapshotDate);
+      const diff = Math.abs(d.getTime() - cutoffDate.getTime());
+      const closestDiff = Math.abs(new Date(closest.snapshotDate).getTime() - cutoffDate.getTime());
+      return diff < closestDiff ? stat : closest;
+    }, accountStats[0]);
+    followerChange = pctChange(latestFollowers, prevStat.followerCount);
+  }
+
+  const kpi = (label: string, value: string, current: number, previous: number): KpiCard => {
+    if (!hasPrev) return { label, value, change: "—", trend: "neutral" };
+    const { change, trend } = pctChange(current, previous);
+    return { label, value, change, trend };
+  };
+
   return {
     row1: [
-      { label: "FOLLOWERS", value: formatNumber(latestFollowers), change: "—", trend: "neutral" },
-      { label: "TOTAL VIEWS", value: formatNumber(totalViews), change: "—", trend: "neutral" },
-      { label: "TOTAL LIKES", value: formatNumber(totalLikes), change: "—", trend: "neutral" },
-      { label: "COMMENTS", value: formatNumber(totalComments), change: "—", trend: "neutral" },
+      { label: "FOLLOWERS", value: formatNumber(latestFollowers), ...(hasPrev ? followerChange : { change: "—", trend: "neutral" as const }) },
+      kpi("TOTAL VIEWS", formatNumber(totalViews), totalViews, prevViews),
+      kpi("TOTAL LIKES", formatNumber(totalLikes), totalLikes, prevLikes),
+      kpi("COMMENTS", formatNumber(totalComments), totalComments, prevComments),
     ],
     row2: [
-      { label: "SHARES", value: formatNumber(totalShares), change: "—", trend: "neutral" },
-      { label: "SAVES", value: formatNumber(totalSaves), change: "—", trend: "neutral" },
-      { label: "AVG WATCH TIME", value: formatDuration(avgWatch), change: "—", trend: "neutral" },
-      { label: "POSTS", value: filtered.length.toString(), change: "—", trend: "neutral" },
+      kpi("SHARES", formatNumber(totalShares), totalShares, prevShares),
+      kpi("SAVES", formatNumber(totalSaves), totalSaves, prevSaves),
+      kpi("AVG WATCH TIME", formatDuration(avgWatch), avgWatch, prevAvgWatch),
+      kpi("POSTS", filtered.length.toString(), filtered.length, prev.length),
     ],
   };
 }
@@ -231,9 +294,14 @@ export function MetricsContent({
     [videos, timeRange]
   );
 
+  const prevVideos = useMemo(
+    () => filterPrevPeriod(videos, timeRange),
+    [videos, timeRange]
+  );
+
   const kpis = useMemo(
-    () => computeKpis(filteredVideos, accountStats),
-    [filteredVideos, accountStats]
+    () => computeKpis(filteredVideos, prevVideos, accountStats, timeRange),
+    [filteredVideos, prevVideos, accountStats, timeRange]
   );
 
   function handleRowClick(video: ContentVideo) {
