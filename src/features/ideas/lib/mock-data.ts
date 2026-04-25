@@ -92,6 +92,7 @@ export interface ContentIdea {
   rawViews: number;
   rawLikes: number;
   rawComments: number;
+  rawPostDate: number;
 }
 
 export const SOURCE_OPTIONS: { value: string; label: string }[] = [
@@ -124,9 +125,10 @@ export const CONTENT_TYPE_OPTIONS = [
   "Review",
 ] as const;
 
-export type SortOption = "outlier" | "views" | "likes" | "comments";
+export type SortOption = "recent" | "outlier" | "views" | "likes" | "comments";
 
 export const SORT_OPTIONS: { value: SortOption; label: string }[] = [
+  { value: "recent", label: "Recent" },
   { value: "outlier", label: "Outlier Score" },
   { value: "views", label: "Views" },
   { value: "likes", label: "Likes" },
@@ -186,6 +188,7 @@ export const MOCK_IDEAS: ContentIdea[] = [
     rawComments: 1247,
     transcript: "",
     metadata: null,
+    rawPostDate: 0,
   },
   {
     id: "idea_02",
@@ -238,6 +241,7 @@ export const MOCK_IDEAS: ContentIdea[] = [
     rawComments: 834,
     transcript: "",
     metadata: null,
+    rawPostDate: 0,
   },
   {
     id: "idea_03",
@@ -291,6 +295,7 @@ export const MOCK_IDEAS: ContentIdea[] = [
     rawComments: 3412,
     transcript: "",
     metadata: null,
+    rawPostDate: 0,
   },
   {
     id: "idea_04",
@@ -343,6 +348,7 @@ export const MOCK_IDEAS: ContentIdea[] = [
     rawComments: 891,
     transcript: "",
     metadata: null,
+    rawPostDate: 0,
   },
   {
     id: "idea_05",
@@ -395,6 +401,7 @@ export const MOCK_IDEAS: ContentIdea[] = [
     rawComments: 567,
     transcript: "",
     metadata: null,
+    rawPostDate: 0,
   },
   {
     id: "idea_06",
@@ -447,6 +454,7 @@ export const MOCK_IDEAS: ContentIdea[] = [
     rawComments: 1567,
     transcript: "",
     metadata: null,
+    rawPostDate: 0,
   },
   {
     id: "idea_07",
@@ -499,6 +507,7 @@ export const MOCK_IDEAS: ContentIdea[] = [
     rawComments: 645,
     transcript: "",
     metadata: null,
+    rawPostDate: 0,
   },
   {
     id: "idea_08",
@@ -550,6 +559,7 @@ export const MOCK_IDEAS: ContentIdea[] = [
     rawComments: 789,
     transcript: "",
     metadata: null,
+    rawPostDate: 0,
   },
   {
     id: "idea_09",
@@ -602,5 +612,6 @@ export const MOCK_IDEAS: ContentIdea[] = [
     rawComments: 1034,
     transcript: "",
     metadata: null,
+    rawPostDate: 0,
   },
 ];

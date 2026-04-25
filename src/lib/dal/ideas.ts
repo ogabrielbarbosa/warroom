@@ -71,6 +71,7 @@ function mapContentRow(row: Record<string, unknown>): ContentIdea {
     rawViews: views,
     rawLikes: likes,
     rawComments: comments,
+    rawPostDate: row.post_date ? Date.parse(row.post_date as string) : 0,
   };
 }
 
@@ -81,8 +82,7 @@ export async function getIdeas(): Promise<ContentIdea[]> {
     .from("content")
     .select("*")
     .eq("is_analyzed", true)
-    .order("views", { ascending: false })
-    .limit(200);
+    .order("views", { ascending: false });
 
   if (!data) return [];
   return data.map(mapContentRow);

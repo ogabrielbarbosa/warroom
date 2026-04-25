@@ -73,6 +73,7 @@ function rowToIdea(row: Record<string, unknown>): ContentIdea {
     rawViews: views,
     rawLikes: likes,
     rawComments: comments,
+    rawPostDate: row.post_date ? Date.parse(row.post_date as string) : 0,
   };
 }
 

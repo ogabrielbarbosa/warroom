@@ -159,7 +159,7 @@ export function IdeasContent({ ideas }: { ideas: ContentIdea[] }) {
   const [platform, setPlatform] = useState("");
   const [contentType, setContentType] = useState("");
   const [account, setAccount] = useState("");
-  const [sortBy, setSortBy] = useState<SortOption>("outlier");
+  const [sortBy, setSortBy] = useState<SortOption>("recent");
 
   const accountOptions = useMemo(() => {
     const handles = [...new Set(ideas.map((i) => i.handle).filter(Boolean))].sort();
@@ -214,8 +214,10 @@ export function IdeasContent({ ideas }: { ideas: ContentIdea[] }) {
         case "comments":
           return b.rawComments - a.rawComments;
         case "outlier":
-        default:
           return b.outlierScore - a.outlierScore;
+        case "recent":
+        default:
+          return b.rawPostDate - a.rawPostDate;
       }
     });
 
