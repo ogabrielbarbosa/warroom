@@ -1,0 +1,21 @@
+{
+  "recipient": {
+    "comment_id": "{{ JSON.stringify($('Global').first().json.comment_id) }}"
+  },
+  "message": {
+    "attachment": {
+      "type": "template",
+      "payload": {
+        "template_type": "button",
+        "text": "{{ JSON.stringify($('Code Match').first().json.welcome_message) }}",
+        "buttons": [
+          {
+            "type": "web_url",
+            "url": "https://bit.ly/magocheckoutinsta",
+            "title": "Comprar Agora"
+          }
+        ]
+      }
+    }
+  }
+}

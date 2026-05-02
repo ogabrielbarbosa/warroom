@@ -10,6 +10,7 @@ import {
   Target,
   PlayCircle,
   ChevronDown,
+  Bot,
 } from "lucide-react";
 
 /* ── Types ───────────────────────────────────────────────── */
@@ -221,6 +222,7 @@ const NAV_TO_PATHNAME: Record<string, string> = {
   content: "/content",
   ideas: "/ideas",
   pipeline: "/pipeline",
+  automations: "/automations",
 };
 
 export interface AppSidebarProps {
@@ -283,6 +285,7 @@ export function AppSidebar({
             { label: "Pipeline", id: "pipeline" },
           ],
         },
+        { icon: Bot, label: "Automations", id: "automations" },
       ],
     },
   ];
